@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "MeleeTrace",
+	"Description": "TBD",
+	"Category": "Other",
+	"CreatedBy": "Robert Lewicki",
+	"CreatedByURL": "https://rlewicki.tech/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "MeleeTrace",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
