@@ -12,7 +12,7 @@ static TAutoConsoleVariable<bool> CVarMeleeTraceShouldDrawDebug(TEXT("MeleeTrace
 	false,
 	TEXT("When set to true or 1 will draw debug drawings of melee traces. Set to false or 0 to disable."));
 static TAutoConsoleVariable<float> CVarMeleeTraceDrawDebugDuration(TEXT("MeleeTrace.DrawDebugDuration"),
-	5.0f,
+	1.0f,
 	TEXT("Defines how long debug drawings will be visible in the viewport."));
 #endif
 
