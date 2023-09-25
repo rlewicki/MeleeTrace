@@ -9,7 +9,7 @@
 
 #include "AnimNotifyState_MeleeTrace.generated.h"
 
-UCLASS()
+UCLASS(DisplayName = "Melee Trace")
 class MELEETRACE_API UAnimNotifyState_MeleeTrace : public UAnimNotifyState
 {
 	GENERATED_BODY()
@@ -25,6 +25,6 @@ public:
 
 	FGuid TraceGuid;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditInstanceOnly)
 	FMeleeTraceInfo MeleeTraceInfo;
 };
