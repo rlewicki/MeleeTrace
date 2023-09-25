@@ -108,7 +108,10 @@ FGuid UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo)
 		}
 	}
 
-	ensureAlwaysMsgf(false, TEXT("None of the USkeletalMeshComponents contain sockets with names: ..."));
+	ensureAlwaysMsgf(false,
+		TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
+		*MeleeTraceInfo.StartSocketName.ToString(),
+		*MeleeTraceInfo.EndSocketName.ToString());
 	return FGuid::NewGuid();
 }
 
