@@ -13,7 +13,7 @@ struct MELEETRACE_API FActiveMeleeTraceInfo
 	GENERATED_BODY()
 
 	FMeleeTraceInfo MeleeTraceInfo;
-	FGuid Guid;
+	uint32 TraceHash;
 	TWeakObjectPtr<USkeletalMeshComponent> SourceMeshComponent;
 	TSet<TWeakObjectPtr<AActor>> HitActors;
 	TArray<FVector> PreviousFrameSampleLocations;

@@ -75,7 +75,6 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 				{
 					ActiveMeleeTrace.HitActors.Add(HitResult.GetActor());
 					OnTraceHit.Broadcast(this,
-						ActiveMeleeTrace.Guid,
 						HitResult.GetActor(),
 						HitResult.ImpactPoint,
 						HitResult.ImpactNormal);
@@ -87,7 +86,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 	}
 }
 
-FGuid UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo)
+void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash)
 {
 	TArray<UActorComponent*> MeshComponents;
 	GetOwner()->GetComponents(USkeletalMeshComponent::StaticClass(), MeshComponents);
@@ -100,11 +99,11 @@ FGuid UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo)
 		{
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
 			NewMeleeTraceInfo.MeleeTraceInfo = MeleeTraceInfo;
-			NewMeleeTraceInfo.Guid = FGuid::NewGuid();
+			NewMeleeTraceInfo.TraceHash = TraceHash;
 			NewMeleeTraceInfo.SourceMeshComponent = TypedMeshComponent;
 			GetTraceSamples(TypedMeshComponent, MeleeTraceInfo, NewMeleeTraceInfo.PreviousFrameSampleLocations);
-			OnTraceStart.Broadcast(this, NewMeleeTraceInfo.Guid);
-			return NewMeleeTraceInfo.Guid;
+			OnTraceStart.Broadcast(this);
+			return;
 		}
 	}
 
@@ -112,22 +111,21 @@ FGuid UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo)
 		TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
 		*MeleeTraceInfo.StartSocketName.ToString(),
 		*MeleeTraceInfo.EndSocketName.ToString());
-	return FGuid::NewGuid();
 }
 
-void UMeleeTraceComponent::EndTrace(const FGuid& TraceGuid)
+void UMeleeTraceComponent::EndTrace(uint32 TraceHash)
 {
 	const int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(
-		[TraceGuid](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
+		[TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
 	{
-		return TraceGuid == ActiveMeleeTraceInfo.Guid; 
+		return TraceHash == ActiveMeleeTraceInfo.TraceHash; 
 	});
 
 	if (ensureAlwaysMsgf(FoundIndex != INDEX_NONE,
-		TEXT("Attemping to end trace with FGuid: %s but no trace with such FGuid exist"),
-		*TraceGuid.ToString()))
+		TEXT("Attemping to end trace with FGuid: %u but no trace with such FGuid exist"),
+		TraceHash))
 	{
-		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].Guid, ActiveMeleeTraces[FoundIndex].HitActors.Num());
+		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].HitActors.Num());
 		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
 	}
 }
@@ -136,7 +134,7 @@ void UMeleeTraceComponent::ForceEndAllTraces()
 {
 	for (const FActiveMeleeTraceInfo& ActiveMeleeTrace : ActiveMeleeTraces)
 	{
-		OnTraceEnd.Broadcast(this, ActiveMeleeTrace.Guid, ActiveMeleeTrace.HitActors.Num());
+		OnTraceEnd.Broadcast(this, ActiveMeleeTrace.HitActors.Num());
 	}
 
 	ActiveMeleeTraces.Reset();

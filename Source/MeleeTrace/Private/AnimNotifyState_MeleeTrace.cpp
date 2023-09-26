@@ -15,7 +15,8 @@ void UAnimNotifyState_MeleeTrace::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	{
 		if (UMeleeTraceComponent* MeleeTraceComponent = OwnerActor->FindComponentByClass<UMeleeTraceComponent>())
 		{
-			TraceGuid = MeleeTraceComponent->StartTrace(MeleeTraceInfo);
+			const uint32 TraceHash = GetTraceHash(MeshComp);
+			MeleeTraceComponent->StartTrace(MeleeTraceInfo, TraceHash);
 		}
 	}
 }
@@ -30,7 +31,15 @@ void UAnimNotifyState_MeleeTrace::NotifyEnd(USkeletalMeshComponent* MeshComp,
 	{
 		if (UMeleeTraceComponent* MeleeTraceComponent = OwnerActor->FindComponentByClass<UMeleeTraceComponent>())
 		{
-			MeleeTraceComponent->EndTrace(TraceGuid);
+			const uint32 TraceHash = GetTraceHash(MeshComp);
+			MeleeTraceComponent->EndTrace(TraceHash);
 		}
 	}
+}
+
+uint32 UAnimNotifyState_MeleeTrace::GetTraceHash(USkeletalMeshComponent* MeshComp) const
+{
+	const uint32 MeshHash = MeshComp->GetUniqueID();
+	const uint32 TraceHash = HashCombineFast(MeshHash, GetUniqueID());
+	return TraceHash;	
 }

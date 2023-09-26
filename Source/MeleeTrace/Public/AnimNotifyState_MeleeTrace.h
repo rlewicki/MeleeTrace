@@ -23,8 +23,9 @@ public:
 		UAnimSequenceBase* Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 
-	FGuid TraceGuid;
-
 	UPROPERTY(EditInstanceOnly)
 	FMeleeTraceInfo MeleeTraceInfo;
+
+protected:
+	uint32 GetTraceHash(USkeletalMeshComponent* MeshComp) const;
 };

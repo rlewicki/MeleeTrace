@@ -22,8 +22,8 @@ public:
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 
-	FGuid StartTrace(const FMeleeTraceInfo& MeleeTraceInfo);
-	void EndTrace(const FGuid& TraceGuid);
+	void StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
+	void EndTrace(uint32 TraceHash);
 
 	UFUNCTION(BlueprintCallable)
 	void ForceEndAllTraces();
@@ -31,20 +31,17 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsAnyTraceActive() const;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceStart, UMeleeTraceComponent*, Self, const FGuid&, TraceGuid);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FTraceEnd,
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceStart,
 		UMeleeTraceComponent*,
-		Self,
-		const FGuid&,
-		TraceGuid,
+		ThisComponent);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceEnd,
+		UMeleeTraceComponent*,
+		ThisComponent,
 		int32,
 		HitCount);
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FTraceHit,
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FTraceHit,
 		UMeleeTraceComponent*,
-		Self,
-		const FGuid&,
-		TraceGuid,
+		ThisComponent,
 		AActor*,
 		HitActor,
 		const FVector&,
