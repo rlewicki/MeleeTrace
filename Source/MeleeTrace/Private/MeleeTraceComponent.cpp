@@ -27,6 +27,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	TRACE_CPUPROFILER_EVENT_SCOPE(UMeleeTraceComponent::TickComponent);
+
 #if ENABLE_DRAW_DEBUG
 	const bool bShouldDrawDebug = CVarMeleeTraceShouldDrawDebug.GetValueOnGameThread();
 	const float DrawDebugDuration = CVarMeleeTraceDrawDebugDuration.GetValueOnGameThread();
