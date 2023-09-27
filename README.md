@@ -14,9 +14,6 @@ Feel free to request features that you would like to be implemented as part of t
 
 # Gallery
 ## Melee tracing hitting a dummy target
-<video src="https://github.com/rlewicki/MeleeTrace/assets/10658394/7e581fde-2211-4446-937c-5a01991a356f" width=180/>
-
-## Test
 https://github.com/rlewicki/MeleeTrace/assets/10658394/7e581fde-2211-4446-937c-5a01991a356f
 
 https://github.com/rlewicki/MeleeTrace/assets/10658394/5208180e-68ad-43de-b1ac-ec7c78bb2978
