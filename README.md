@@ -14,23 +14,12 @@ Feel free to request features that you would like to be implemented as part of t
 
 # Gallery
 ## Melee tracing hitting a dummy target
-<div style="width: 50%; float: left; padding-right:4px;">
-<p>Debug drawing OFF</p>
-    <video controls width="350">
-        <source src="Gallery/TargetTraceNoDebug.mov" type="video/webm" />
-    </video>
-</div>
-<div style="margin-left: 50%; padding-left:4px;">
-<p>Debug drawing ON</p>
-    <video controls width="350">
-        <source src="Gallery/TargetTraceDebug.mov" type="video/webm" />
-    </video>
-</div>
+https://github.com/rlewicki/MeleeTrace/assets/10658394/7e581fde-2211-4446-937c-5a01991a356f
+
+https://github.com/rlewicki/MeleeTrace/assets/10658394/5208180e-68ad-43de-b1ac-ec7c78bb2978
 
 ## Misc attack animations
-<video controls width="708">
-    <source src="Gallery/MultipleAnimations.mov" type="video/webm" />
-</video>
+https://github.com/rlewicki/MeleeTrace/assets/10658394/fb3e26db-8bda-4fb7-af0a-2c30fe1aac58
 
 # Credits
 Animations used in the gallery videos and sample projects are made by ZzGERTzZ, you can purchase them in on Marketplace [here](https://www.unrealengine.com/marketplace/en-US/product/close-combat-swordsman).
