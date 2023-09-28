@@ -9,7 +9,7 @@
 	"CreatedBy": "Robert Lewicki",
 	"CreatedByURL": "https://rlewicki.tech/",
 	"DocsURL": "https://github.com/rlewicki/MeleeTrace/wiki",
-	"MarketplaceURL": "",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/42b0bb860bcd4995b70d40f152a6e9b9",
 	"SupportURL": "https://github.com/rlewicki/MeleeTrace",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
