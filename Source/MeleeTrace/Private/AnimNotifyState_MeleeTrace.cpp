@@ -2,6 +2,8 @@
 
 #include "AnimNotifyState_MeleeTrace.h"
 
+#include "Components/SkeletalMeshComponent.h"
+
 #include "MeleeTraceComponent.h"
 
 void UAnimNotifyState_MeleeTrace::NotifyBegin(USkeletalMeshComponent* MeshComp,

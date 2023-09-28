@@ -14,6 +14,6 @@ class MELEETRACE_API UMeleeTraceSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config, Category = "General")
 	TEnumAsByte<ECollisionChannel> MeleeTraceCollisionChannel;
 };

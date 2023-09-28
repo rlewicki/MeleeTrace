@@ -23,7 +23,7 @@ public:
 		UAnimSequenceBase* Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY(EditInstanceOnly, Category = "Setup")
 	FMeleeTraceInfo MeleeTraceInfo;
 
 protected:

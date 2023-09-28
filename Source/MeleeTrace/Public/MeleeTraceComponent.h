@@ -25,10 +25,10 @@ public:
 	void StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
 	void EndTrace(uint32 TraceHash);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
 	void ForceEndAllTraces();
 
-	UFUNCTION(BlueprintPure)
+	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	bool IsAnyTraceActive() const;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceStart,

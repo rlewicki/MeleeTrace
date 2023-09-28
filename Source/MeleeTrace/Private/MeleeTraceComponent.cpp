@@ -2,9 +2,11 @@
 
 #include "MeleeTraceComponent.h"
 
+#include "Engine/World.h"
+
 #include "MeleeTraceSettings.h"
 
-#if ENABLE_DRAW_DEBUG
+#ifdef ENABLE_DRAW_DEBUG
 #include "Engine/Private/KismetTraceUtils.h"
 
 
@@ -29,7 +31,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 
 	TRACE_CPUPROFILER_EVENT_SCOPE(UMeleeTraceComponent::TickComponent);
 
-#if ENABLE_DRAW_DEBUG
+#ifdef ENABLE_DRAW_DEBUG
 	const bool bShouldDrawDebug = CVarMeleeTraceShouldDrawDebug.GetValueOnGameThread();
 	const float DrawDebugDuration = CVarMeleeTraceDrawDebugDuration.GetValueOnGameThread();
 #endif
@@ -51,7 +53,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 				TraceCollisionChannel,
 				FCollisionShape::MakeSphere(ActiveMeleeTrace.MeleeTraceInfo.Radius),
 				CollisionQueryParams);
-#if ENABLE_DRAW_DEBUG
+#ifdef ENABLE_DRAW_DEBUG
 			if (bShouldDrawDebug)
 			{
 				DrawDebugSphereTraceMulti(GetWorld(),
