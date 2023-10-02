@@ -1,5 +1,5 @@
 <h1 align="center">Melee Trace</h1>
-<p align="center" style="display:inline;"><a href="https://github.com/rlewicki/MeleeTrace/wiki">Wiki</a> • <a href="#">Marketplace</a> • <a href="https://github.com/rlewicki/MeleeTraceSampleProject">Sample Project</a></p>
+<p align="center" style="display:inline;"><a href="https://github.com/rlewicki/MeleeTrace/wiki">Wiki</a> • <a href="#">Marketplace</a></p>
 
 # The What
 This is a fairly generic plugin that enables you to setup melee traces directly in your animation assets.
