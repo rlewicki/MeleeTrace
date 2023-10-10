@@ -3,16 +3,11 @@
 #include "MeleeTraceComponent.h"
 
 #include "Engine/World.h"
-#include "Misc/EngineVersionComparison.h"
 
 #include "MeleeTraceSettings.h"
 
 #ifdef ENABLE_DRAW_DEBUG
-#if UE_VERSION_OLDER_THAN(5, 3, 0)
-#include "Engine/Private/KismetTraceUtils.h"
-#else
-#include "KismetTraceUtils.h"
-#endif
+#include "MeleeTraceDebug.h"
 
 static TAutoConsoleVariable<bool> CVarMeleeTraceShouldDrawDebug(TEXT("MeleeTrace.ShouldDrawDebug"),
 	false,
@@ -60,7 +55,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 #ifdef ENABLE_DRAW_DEBUG
 			if (bShouldDrawDebug)
 			{
-				DrawDebugSphereTraceMulti(GetWorld(),
+				MeleeTrace::DrawDebugSphereTraceMulti(GetWorld(),
 					ActiveMeleeTrace.PreviousFrameSampleLocations[Index],
 					NewSamples[Index],
 					ActiveMeleeTrace.MeleeTraceInfo.Radius,
