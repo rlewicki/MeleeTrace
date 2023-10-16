@@ -93,10 +93,10 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash)
 {
 	TArray<UActorComponent*> MeshComponents;
-	GetOwner()->GetComponents(USkeletalMeshComponent::StaticClass(), MeshComponents);
+	GetOwner()->GetComponents(UMeshComponent::StaticClass(), MeshComponents);
 	for (UActorComponent* MeshComponent : MeshComponents)
 	{
-		USkeletalMeshComponent* TypedMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent);
+		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
 		check(TypedMeshComponent);
 		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName)
 			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
@@ -149,7 +149,7 @@ bool UMeleeTraceComponent::IsAnyTraceActive() const
 	return ActiveMeleeTraces.Num() > 0;
 }
 
-void UMeleeTraceComponent::GetTraceSamples(const USkeletalMeshComponent* MeshComponent,
+void UMeleeTraceComponent::GetTraceSamples(const UMeshComponent* MeshComponent,
 	const FMeleeTraceInfo& MeleeTraceInfo,
 	TArray<FVector>& OutSamples)
 {

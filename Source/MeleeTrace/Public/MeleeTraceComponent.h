@@ -61,7 +61,7 @@ public:
 	FTraceHit OnTraceHit;
 
 protected:
-	static void GetTraceSamples(const USkeletalMeshComponent* MeshComponent,
+	static void GetTraceSamples(const UMeshComponent* MeshComponent,
 		const FMeleeTraceInfo& MeleeTraceInfo,
 		TArray<FVector>& OutSamples);
 	TArray<FActiveMeleeTraceInfo> ActiveMeleeTraces;

@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "MeleeTraceInfo.h"
 #include "UObject/Object.h"
+
 #include "ActiveMeleeTraceInfo.generated.h"
+
+class UMeshComponent;
 
 USTRUCT()
 struct MELEETRACE_API FActiveMeleeTraceInfo
@@ -14,7 +17,7 @@ struct MELEETRACE_API FActiveMeleeTraceInfo
 
 	FMeleeTraceInfo MeleeTraceInfo;
 	uint32 TraceHash;
-	TWeakObjectPtr<USkeletalMeshComponent> SourceMeshComponent;
+	TWeakObjectPtr<UMeshComponent> SourceMeshComponent;
 	TSet<TWeakObjectPtr<AActor>> HitActors;
 	TArray<FVector> PreviousFrameSampleLocations;
 };
