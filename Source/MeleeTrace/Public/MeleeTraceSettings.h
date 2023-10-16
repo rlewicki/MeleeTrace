@@ -7,7 +7,11 @@
 
 #include "MeleeTraceSettings.generated.h"
 
+#if UE_VERSION_OLDER_THAN(5, 2, 0)
+enum ECollisionChannel;
+#else
 enum ECollisionChannel : int;
+#endif
 
 UCLASS(Config=Game, DefaultToInstanced)
 class MELEETRACE_API UMeleeTraceSettings : public UDeveloperSettings
