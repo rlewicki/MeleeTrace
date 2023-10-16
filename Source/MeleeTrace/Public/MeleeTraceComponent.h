@@ -39,7 +39,7 @@ public:
 		ThisComponent,
 		int32,
 		HitCount);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FTraceHit,
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FTraceHit,
 		UMeleeTraceComponent*,
 		ThisComponent,
 		AActor*,
@@ -47,7 +47,9 @@ public:
 		const FVector&,
 		HitLocation,
 		const FVector&,
-		HitNormal);
+		HitNormal,
+		FName,
+		HitBoneName);
 
 	UPROPERTY(BlueprintAssignable)
 	FTraceStart OnTraceStart;

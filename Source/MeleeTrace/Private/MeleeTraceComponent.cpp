@@ -80,7 +80,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 					OnTraceHit.Broadcast(this,
 						HitResult.GetActor(),
 						HitResult.ImpactPoint,
-						HitResult.ImpactNormal);
+						HitResult.ImpactNormal,
+						HitResult.BoneName);
 				}
 			}
 		}
