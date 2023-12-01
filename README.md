@@ -10,6 +10,9 @@ Within last few years I've been working on many prototypes that required functio
 # The How
 High level description would be that the hit detection is ran by sphere traces of pre-defined radius between previous frame skeletal mesh socket location and current frame skeletal mesh socket location. The skeletal mesh component can be either the character mesh itself or any other attached skeletal mesh e.g. weapon. For more detailed description and break down how it works please refer to the wiki page.
 
+# Community example projects
+- [Melee-Trace-Example-1](https://github.com/unreal79/Melee-Trace-Example-1) by [@unreal79](https://github.com/unreal79)
+
 # Feature requests
 Feel free to request features that you would like to be implemented as part of this plugin as GitHub issues.
 
