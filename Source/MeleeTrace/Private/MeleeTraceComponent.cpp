@@ -20,6 +20,8 @@ static TAutoConsoleVariable<float> CVarMeleeTraceDrawDebugDuration(TEXT("MeleeTr
 UMeleeTraceComponent::UMeleeTraceComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	TraceChannel = GetDefault<UMeleeTraceSettings>()->MeleeTraceCollisionChannel;
 }
 
 void UMeleeTraceComponent::TickComponent(float DeltaTime,
@@ -34,7 +36,6 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 	const bool bShouldDrawDebug = CVarMeleeTraceShouldDrawDebug.GetValueOnGameThread();
 	const float DrawDebugDuration = CVarMeleeTraceDrawDebugDuration.GetValueOnGameThread();
 #endif
-	const ECollisionChannel TraceCollisionChannel = GetDefault<UMeleeTraceSettings>()->MeleeTraceCollisionChannel;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(GetOwner());
 	TArray<FHitResult> HitResults;
@@ -49,7 +50,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 				ActiveMeleeTrace.PreviousFrameSampleLocations[Index],
 				NewSamples[Index],
 				FQuat::Identity,
-				TraceCollisionChannel,
+				TraceChannel,
 				FCollisionShape::MakeSphere(ActiveMeleeTrace.MeleeTraceInfo.Radius),
 				CollisionQueryParams);
 #ifdef ENABLE_DRAW_DEBUG
@@ -147,6 +148,16 @@ void UMeleeTraceComponent::ForceEndAllTraces()
 bool UMeleeTraceComponent::IsAnyTraceActive() const
 {
 	return ActiveMeleeTraces.Num() > 0;
+}
+
+void UMeleeTraceComponent::SetTraceChannel(ECollisionChannel NewTraceChannel)
+{
+	TraceChannel = NewTraceChannel;
+}
+
+ECollisionChannel UMeleeTraceComponent::GetTraceChannel() const
+{
+	return TraceChannel;
 }
 
 void UMeleeTraceComponent::GetTraceSamples(const UMeshComponent* MeshComponent,

@@ -31,6 +31,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	bool IsAnyTraceActive() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	void SetTraceChannel(ECollisionChannel NewTraceChannel);
+
+	UFUNCTION(BlueprintPure, Category = "Melee Trace")
+	ECollisionChannel GetTraceChannel() const;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceStart,
 		UMeleeTraceComponent*,
 		ThisComponent);
@@ -65,4 +71,7 @@ protected:
 		const FMeleeTraceInfo& MeleeTraceInfo,
 		TArray<FVector>& OutSamples);
 	TArray<FActiveMeleeTraceInfo> ActiveMeleeTraces;
+
+	UPROPERTY(EditDefaultsOnly)
+	TEnumAsByte<ECollisionChannel> TraceChannel;
 };
