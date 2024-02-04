@@ -10,15 +10,15 @@ struct MELEETRACE_API FMeleeTraceInfo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, Category = "General")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	FName StartSocketName;
 
-	UPROPERTY(EditDefaultsOnly, Category = "General")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	FName EndSocketName;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "General")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	float Radius = 1.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "General")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	int32 TraceDensity = 5;
 };
