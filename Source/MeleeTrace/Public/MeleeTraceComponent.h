@@ -10,6 +10,25 @@
 
 #include "MeleeTraceComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMeleeTraceStart,
+	UMeleeTraceComponent*,
+	ThisComponent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMeleeTraceEnd,
+	UMeleeTraceComponent*,
+	ThisComponent,
+	int32,
+	HitCount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FMeleeTraceHit,
+	UMeleeTraceComponent*,
+	ThisComponent,
+	AActor*,
+	HitActor,
+	const FVector&,
+	HitLocation,
+	const FVector&,
+	HitNormal,
+	FName,
+	HitBoneName);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MELEETRACE_API UMeleeTraceComponent : public UActorComponent
@@ -37,35 +56,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	ECollisionChannel GetTraceChannel() const;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceStart,
-		UMeleeTraceComponent*,
-		ThisComponent);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceEnd,
-		UMeleeTraceComponent*,
-		ThisComponent,
-		int32,
-		HitCount);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FTraceHit,
-		UMeleeTraceComponent*,
-		ThisComponent,
-		AActor*,
-		HitActor,
-		const FVector&,
-		HitLocation,
-		const FVector&,
-		HitNormal,
-		FName,
-		HitBoneName);
+	UPROPERTY(BlueprintAssignable)
+	FMeleeTraceStart OnTraceStart;
 
 	UPROPERTY(BlueprintAssignable)
-	FTraceStart OnTraceStart;
+	FMeleeTraceEnd OnTraceEnd;
 
 	UPROPERTY(BlueprintAssignable)
-	FTraceEnd OnTraceEnd;
-
-	UPROPERTY(BlueprintAssignable)
-	FTraceHit OnTraceHit;
-
+	FMeleeTraceHit OnTraceHit;
 protected:
 	static void GetTraceSamples(const UMeshComponent* MeshComponent,
 		const FMeleeTraceInfo& MeleeTraceInfo,
