@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/CancellableAsyncAction.h"
-#include "Async_WaitForMeleeTraceHit.generated.h"
+#include "Async_WaitForMeleeTraceEvent.generated.h"
 
 class UMeleeTraceComponent;
 
@@ -30,7 +30,7 @@ struct MELEETRACE_API FAsyncMeleeHitInfo
 };
 
 UCLASS()
-class MELEETRACE_API UAsync_WaitForMeleeTraceHit : public UCancellableAsyncAction
+class MELEETRACE_API UAsync_WaitForMeleeTraceEvent : public UCancellableAsyncAction
 {
 	GENERATED_BODY()
 public:
@@ -38,13 +38,21 @@ public:
 		BlueprintCallable,
 		Category = "Melee Trace",
 		meta = (WorldContext = "WorldContextObject", BlueprintInternalUseOnly = "True"))
-	static UAsync_WaitForMeleeTraceHit* WaitForMeleeHit(UObject* WorldContextObject, AActor* ActorToWatch);
+	static UAsync_WaitForMeleeTraceEvent* WaitForMeleeTraceEventHit(UObject* WorldContextObject, AActor* ActorToWatch);
 
 	virtual void Cancel() override;
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAsyncWaitForMeleeHitDetected, FAsyncMeleeHitInfo, HitInfo);
 	UPROPERTY(BlueprintAssignable)
 	FAsyncWaitForMeleeHitDetected OnHit;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAsyncWaitForMeleeTraceStarted);
+	UPROPERTY(BlueprintAssignable)
+	FAsyncWaitForMeleeTraceStarted OnStarted;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAsyncWaitForMeleeTraceEnded);
+	UPROPERTY(BlueprintAssignable)
+	FAsyncWaitForMeleeTraceEnded OnEnded;
 protected:
 	virtual void Activate() override;
 
@@ -58,4 +66,10 @@ protected:
 		const FVector& HitLocation,
 		const FVector& HitNormal,
 		FName HitBoneName);
+
+	UFUNCTION()
+	void HandleTraceStarted(UMeleeTraceComponent* ThisComponent);
+
+	UFUNCTION()
+	void HandleTraceEnded(UMeleeTraceComponent* ThisComponent, int32 HitCount);
 };

@@ -1,11 +1,12 @@
 ﻿// Copyright 2024, Robert Lewicki, All rights reserved.
 
-#include "Async_WaitForMeleeTraceHit.h"
+#include "Async_WaitForMeleeTraceEvent.h"
 
 #include "MeleeTraceCommon.h"
 #include "MeleeTraceComponent.h"
 
-UAsync_WaitForMeleeTraceHit* UAsync_WaitForMeleeTraceHit::WaitForMeleeHit(UObject* WorldContextObject, AActor* ActorToWatch)
+UAsync_WaitForMeleeTraceEvent* UAsync_WaitForMeleeTraceEvent::WaitForMeleeTraceEventHit(
+	UObject* WorldContextObject, AActor* ActorToWatch)
 {
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World)
@@ -32,18 +33,20 @@ UAsync_WaitForMeleeTraceHit* UAsync_WaitForMeleeTraceHit::WaitForMeleeHit(UObjec
 		return nullptr;
 	}
 
-	auto* NewAction = NewObject<UAsync_WaitForMeleeTraceHit>();
+	auto* NewAction = NewObject<UAsync_WaitForMeleeTraceEvent>();
 	NewAction->ActorToWatch = ActorToWatch;
 	NewAction->MeleeTraceComponent = MeleeTraceComponent;
 	NewAction->RegisterWithGameInstance(World);
 	return NewAction;
 }
 
-void UAsync_WaitForMeleeTraceHit::Cancel()
+void UAsync_WaitForMeleeTraceEvent::Cancel()
 {
 	if (MeleeTraceComponent.IsValid())
 	{
 		MeleeTraceComponent->OnTraceHit.RemoveDynamic(this, &ThisClass::HandleTraceHit);
+		MeleeTraceComponent->OnTraceStart.RemoveDynamic(this, &ThisClass::HandleTraceStarted);
+		MeleeTraceComponent->OnTraceEnd.RemoveDynamic(this, &ThisClass::HandleTraceEnded);
 	}
 
 	ActorToWatch.Reset();
@@ -52,12 +55,14 @@ void UAsync_WaitForMeleeTraceHit::Cancel()
 	Super::Cancel();
 }
 
-void UAsync_WaitForMeleeTraceHit::Activate()
+void UAsync_WaitForMeleeTraceEvent::Activate()
 {
 	MeleeTraceComponent->OnTraceHit.AddDynamic(this, &ThisClass::HandleTraceHit);
+	MeleeTraceComponent->OnTraceStart.AddDynamic(this, &ThisClass::HandleTraceStarted);
+	MeleeTraceComponent->OnTraceEnd.AddDynamic(this, &ThisClass::HandleTraceEnded);
 }
 
-void UAsync_WaitForMeleeTraceHit::HandleTraceHit(
+void UAsync_WaitForMeleeTraceEvent::HandleTraceHit(
 	UMeleeTraceComponent* ThisComponent,
 	AActor* HitActor,
 	const FVector& HitLocation,
@@ -71,4 +76,14 @@ void UAsync_WaitForMeleeTraceHit::HandleTraceHit(
 	HitInfo.HitNormal = HitNormal;
 	HitInfo.HitBoneName = HitBoneName;
 	OnHit.Broadcast(HitInfo);
+}
+
+void UAsync_WaitForMeleeTraceEvent::HandleTraceStarted(UMeleeTraceComponent* ThisComponent)
+{
+	OnStarted.Broadcast();
+}
+
+void UAsync_WaitForMeleeTraceEvent::HandleTraceEnded(UMeleeTraceComponent* ThisComponent, int32 HitCount)
+{
+	OnEnded.Broadcast();
 }
