@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
 #include "MeleeTraceInfo.generated.h"
 
 USTRUCT(BlueprintType)

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "MeleeTraceInfo.h"
-#include "UObject/Object.h"
 
 #include "ActiveMeleeTraceInfo.generated.h"
 
