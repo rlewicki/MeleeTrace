@@ -32,7 +32,4 @@ public:
 
 	UPROPERTY(EditInstanceOnly, Category = "Setup")
 	FMeleeTraceInfo MeleeTraceInfo;
-
-protected:
-	uint32 GetTraceHash(USkeletalMeshComponent* MeshComp) const;
 };
