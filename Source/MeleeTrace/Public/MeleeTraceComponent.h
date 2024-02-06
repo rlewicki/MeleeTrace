@@ -70,6 +70,6 @@ protected:
 		TArray<FVector>& OutSamples);
 	TArray<FActiveMeleeTraceInfo> ActiveMeleeTraces;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Melee Trace")
 	TEnumAsByte<ECollisionChannel> TraceChannel;
 };

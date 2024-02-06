@@ -13,19 +13,19 @@ struct MELEETRACE_API FAsyncMeleeHitInfo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	TObjectPtr<UMeleeTraceComponent> OwnerTraceComponent;
 
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	TObjectPtr<AActor> HitActor;
 
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	FVector HitLocation;
 
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	FVector HitNormal;
 
-	UPROPERTY(BlueprintReadOnly, Transient)
+	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	FName HitBoneName;
 };
 
