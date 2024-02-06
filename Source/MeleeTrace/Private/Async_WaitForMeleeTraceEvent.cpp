@@ -2,6 +2,9 @@
 
 #include "Async_WaitForMeleeTraceEvent.h"
 
+#include "Engine/Engine.h"
+#include "Engine/World.h"
+
 #include "MeleeTraceCommon.h"
 #include "MeleeTraceComponent.h"
 
