@@ -93,13 +93,28 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 
 void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash)
 {
+	AActor* Owner = GetOwner();
+
 	TArray<UActorComponent*> MeshComponents;
-	GetOwner()->GetComponents(UMeshComponent::StaticClass(), MeshComponents);
+	TArray<AActor*> ActorsToCheck = { Owner };
+	TArray<AActor*> AttachedActors;
+
+	Owner->GetAttachedActors(AttachedActors);
+	ActorsToCheck.Append(AttachedActors);
+
+	for (AActor* Actor : ActorsToCheck)
+	{
+		TArray<UActorComponent*> ActorMeshComponents;
+		Actor->GetComponents(UMeshComponent::StaticClass(), ActorMeshComponents);
+		MeshComponents.Append(ActorMeshComponents);
+	}
+
 	for (UActorComponent* MeshComponent : MeshComponents)
 	{
 		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
 		check(TypedMeshComponent);
-		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName)
+
+		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName) 
 			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
 		{
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
