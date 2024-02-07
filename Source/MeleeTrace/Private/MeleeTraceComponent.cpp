@@ -113,7 +113,6 @@ void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uin
 	{
 		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
 		check(TypedMeshComponent);
-
 		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName) 
 			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
 		{
