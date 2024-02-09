@@ -155,6 +155,16 @@ ECollisionChannel UMeleeTraceComponent::GetTraceChannel() const
 	return TraceChannel;
 }
 
+void UMeleeTraceComponent::InvalidateMeleeTraceHandle(FMeleeTraceInstanceHandle& Handle)
+{
+	Handle.TraceHash = MeleeTrace::INVALID_HASH;
+}
+
+bool UMeleeTraceComponent::IsMeleeTraceHandleValid(const FMeleeTraceInstanceHandle& Handle)
+{
+	return Handle.TraceHash != MeleeTrace::INVALID_HASH;
+}
+
 void UMeleeTraceComponent::GetTraceSamples(const UMeshComponent* MeshComponent,
 	const FMeleeTraceInfo& MeleeTraceInfo,
 	TArray<FVector>& OutSamples)

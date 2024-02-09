@@ -79,6 +79,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	ECollisionChannel GetTraceChannel() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	static void InvalidateMeleeTraceHandle(UPARAM(Ref) FMeleeTraceInstanceHandle& Handle);
+
+	UFUNCTION(BlueprintPure, Category = "Melee Trace")
+	static bool IsMeleeTraceHandleValid(const FMeleeTraceInstanceHandle& Handle);
+
 	UPROPERTY(BlueprintAssignable)
 	FMeleeTraceStart OnTraceStart;
 
