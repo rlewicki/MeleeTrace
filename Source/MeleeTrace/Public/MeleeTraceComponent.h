@@ -30,6 +30,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FMeleeTraceHit,
 	FName,
 	HitBoneName);
 
+USTRUCT(BlueprintType)
+struct MELEETRACE_API FMeleeTraceInstanceHandle
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	uint32 TraceHash;
+};
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MELEETRACE_API UMeleeTraceComponent : public UActorComponent
 {
@@ -41,8 +50,22 @@ public:
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 
-	void StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
-	void EndTrace(uint32 TraceHash);
+	// Starts trace and uses Context object to generate and later retrieve unique handle for the trace that has been
+	// started. Using this has a known limitation of only one trace being active per Context object. This is fine
+	// in most cases as for example each anim notify state is a unique object and it can only control one trace.
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	void StartTraceWithContext(const FMeleeTraceInfo& MeleeTraceInfo, const UObject* Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	void EndTraceWithContext(const UObject* Context);
+
+	// Starts trace and returns a unique handle for this given trace. To stop it, EndTrace must be called with
+	// the same handle structure. Owner is responsible for storing the handle.
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	FMeleeTraceInstanceHandle StartTrace(const FMeleeTraceInfo& MeleeTraceInfo);
+
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	void EndTrace(FMeleeTraceInstanceHandle MeleeTraceInstanceHandle);
 
 	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
 	void ForceEndAllTraces();
@@ -68,6 +91,10 @@ protected:
 	static void GetTraceSamples(const UMeshComponent* MeshComponent,
 		const FMeleeTraceInfo& MeleeTraceInfo,
 		TArray<FVector>& OutSamples);
+
+	void InternalStartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
+	void InternalEndTrace(uint32 TraceHash);
+	
 	TArray<FActiveMeleeTraceInfo> ActiveMeleeTraces;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Melee Trace")

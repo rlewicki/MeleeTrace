@@ -2,6 +2,7 @@
 
 #include "MeleeTraceComponent.h"
 
+#include "MeleeTraceCommon.h"
 #include "Engine/World.h"
 
 #include "MeleeTraceSettings.h"
@@ -91,62 +92,42 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 	}
 }
 
-void UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash)
+void UMeleeTraceComponent::StartTraceWithContext(const FMeleeTraceInfo& MeleeTraceInfo, const UObject* Context)
 {
-	AActor* Owner = GetOwner();
-
-	TArray<UActorComponent*> MeshComponents;
-	TArray<AActor*> ActorsToCheck = { Owner };
-	TArray<AActor*> AttachedActors;
-
-	Owner->GetAttachedActors(AttachedActors);
-	ActorsToCheck.Append(AttachedActors);
-
-	for (AActor* Actor : ActorsToCheck)
+	if (!ensureMsgf(Context, TEXT("Invalid Context object passed to %s"), StringCast<TCHAR>(__FUNCTION__).Get()))
 	{
-		TArray<UActorComponent*> ActorMeshComponents;
-		Actor->GetComponents(UMeshComponent::StaticClass(), ActorMeshComponents);
-		MeshComponents.Append(ActorMeshComponents);
+		return;
 	}
 
-	for (UActorComponent* MeshComponent : MeshComponents)
-	{
-		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
-		check(TypedMeshComponent);
-		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName) 
-			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
-		{
-			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
-			NewMeleeTraceInfo.MeleeTraceInfo = MeleeTraceInfo;
-			NewMeleeTraceInfo.TraceHash = TraceHash;
-			NewMeleeTraceInfo.SourceMeshComponent = TypedMeshComponent;
-			GetTraceSamples(TypedMeshComponent, MeleeTraceInfo, NewMeleeTraceInfo.PreviousFrameSampleLocations);
-			OnTraceStart.Broadcast(this);
-			return;
-		}
-	}
-
-	ensureAlwaysMsgf(false,
-		TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
-		*MeleeTraceInfo.StartSocketName.ToString(),
-		*MeleeTraceInfo.EndSocketName.ToString());
+	const uint32 ContextHash = MeleeTrace::CombineHashes(Context->GetUniqueID(), GetUniqueID());
+	const uint32 TraceHash = MeleeTrace::CalculateNewTraceHashWithContext(ContextHash);
+	InternalStartTrace(MeleeTraceInfo, TraceHash);
 }
 
-void UMeleeTraceComponent::EndTrace(uint32 TraceHash)
+void UMeleeTraceComponent::EndTraceWithContext(const UObject* Context)
 {
-	const int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(
-		[TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
+	if (!ensureMsgf(Context, TEXT("Invalid Context object passed to %s"), StringCast<TCHAR>(__FUNCTION__).Get()))
 	{
-		return TraceHash == ActiveMeleeTraceInfo.TraceHash; 
-	});
-
-	if (ensureAlwaysMsgf(FoundIndex != INDEX_NONE,
-		TEXT("Attemping to end trace with FGuid: %u but no trace with such FGuid exist"),
-		TraceHash))
-	{
-		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].HitActors.Num());
-		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
+		return;
 	}
+
+	const uint32 ContextHash = MeleeTrace::CombineHashes(Context->GetUniqueID(), GetUniqueID());
+	const uint32 TraceHash = MeleeTrace::GetTraceHash(ContextHash);
+	InternalEndTrace(TraceHash);
+	MeleeTrace::ReleaseTraceHash(ContextHash);
+}
+
+FMeleeTraceInstanceHandle UMeleeTraceComponent::StartTrace(const FMeleeTraceInfo& MeleeTraceInfo)
+{
+	FMeleeTraceInstanceHandle InstanceHandle;
+	InstanceHandle.TraceHash = MeleeTrace::CalculateNewTraceHash();
+	InternalStartTrace(MeleeTraceInfo, InstanceHandle.TraceHash);
+	return InstanceHandle;
+}
+
+void UMeleeTraceComponent::EndTrace(FMeleeTraceInstanceHandle MeleeTraceInstanceHandle)
+{
+	InternalEndTrace(MeleeTraceInstanceHandle.TraceHash);
 }
 
 void UMeleeTraceComponent::ForceEndAllTraces()
@@ -186,5 +167,70 @@ void UMeleeTraceComponent::GetTraceSamples(const UMeshComponent* MeshComponent,
 		const float Alpha = static_cast<float>(Index) / static_cast<float>(MeleeTraceInfo.TraceDensity);
 		const FVector Sample = FMath::Lerp(StartSampleLocation, EndSampleLocation, Alpha);
 		OutSamples.Add(Sample);
+	}
+}
+
+void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash)
+{
+	AActor* Owner = GetOwner();
+	check(Owner);
+
+	TArray<UActorComponent*> MeshComponents;
+	TArray<AActor*> ActorsToCheck = { Owner };
+	TArray<AActor*> AttachedActors;
+
+	Owner->GetAttachedActors(AttachedActors);
+	ActorsToCheck.Append(AttachedActors);
+
+	for (const AActor* Actor : ActorsToCheck)
+	{
+		TArray<UActorComponent*> ActorMeshComponents;
+		Actor->GetComponents(UMeshComponent::StaticClass(), ActorMeshComponents);
+		MeshComponents.Append(ActorMeshComponents);
+	}
+
+	for (UActorComponent* MeshComponent : MeshComponents)
+	{
+		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
+		check(TypedMeshComponent);
+		if (TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.StartSocketName) 
+			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
+		{
+			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
+			NewMeleeTraceInfo.MeleeTraceInfo = MeleeTraceInfo;
+			NewMeleeTraceInfo.TraceHash = TraceHash;
+			NewMeleeTraceInfo.SourceMeshComponent = TypedMeshComponent;
+			GetTraceSamples(TypedMeshComponent, MeleeTraceInfo, NewMeleeTraceInfo.PreviousFrameSampleLocations);
+			OnTraceStart.Broadcast(this);
+			return;
+		}
+	}
+
+	ensureAlwaysMsgf(false,
+		TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
+		*MeleeTraceInfo.StartSocketName.ToString(),
+		*MeleeTraceInfo.EndSocketName.ToString());
+}
+
+void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
+{
+	if (!ensureMsgf(TraceHash != 0,
+		TEXT("No hash found for %s context object. Make sure that you start trace before calling end")))
+	{
+		return;
+	}
+
+	const int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(
+		[TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
+		{
+			return TraceHash == ActiveMeleeTraceInfo.TraceHash;
+		});
+
+	if (ensureAlwaysMsgf(FoundIndex != INDEX_NONE,
+		TEXT("Attemping to end trace with hash: %u but no trace with hash exist"),
+		TraceHash))
+	{
+		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].HitActors.Num());
+		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
 	}
 }

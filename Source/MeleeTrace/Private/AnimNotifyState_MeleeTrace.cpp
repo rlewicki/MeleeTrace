@@ -2,7 +2,6 @@
 
 #include "AnimNotifyState_MeleeTrace.h"
 
-#include "MeleeTraceCommon.h"
 #include "Components/SkeletalMeshComponent.h"
 
 #include "MeleeTraceComponent.h"
@@ -23,12 +22,11 @@ void UAnimNotifyState_MeleeTrace::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 #endif
 
-	if (AActor* OwnerActor = MeshComp->GetOwner())
+	if (const AActor* OwnerActor = MeshComp->GetOwner())
 	{
 		if (UMeleeTraceComponent* MeleeTraceComponent = OwnerActor->FindComponentByClass<UMeleeTraceComponent>())
 		{
-			const uint32 TraceHash = GetTraceHash(MeshComp, this);
-			MeleeTraceComponent->StartTrace(MeleeTraceInfo, TraceHash);
+			MeleeTraceComponent->StartTraceWithContext(MeleeTraceInfo, this);
 		}
 	}
 }
@@ -47,12 +45,11 @@ void UAnimNotifyState_MeleeTrace::NotifyEnd(USkeletalMeshComponent* MeshComp,
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 #endif
 
-	if (AActor* OwnerActor = MeshComp->GetOwner())
+	if (const AActor* OwnerActor = MeshComp->GetOwner())
 	{
 		if (UMeleeTraceComponent* MeleeTraceComponent = OwnerActor->FindComponentByClass<UMeleeTraceComponent>())
 		{
-			const uint32 TraceHash = ::GetTraceHash(MeshComp, this);
-			MeleeTraceComponent->EndTrace(TraceHash);
+			MeleeTraceComponent->EndTraceWithContext(this);
 		}
 	}
 }

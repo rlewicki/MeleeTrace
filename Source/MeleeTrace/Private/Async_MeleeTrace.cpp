@@ -56,8 +56,7 @@ void UAsync_MeleeTrace::StartTrace()
 {
 	if (ensure(MeleeTraceComponent.IsValid()))
 	{
-		TraceHash = GetTraceHash(MeleeTraceComponent.Get(), this);
-		MeleeTraceComponent->StartTrace(TraceInfo, TraceHash);
+		MeleeTraceComponent->StartTraceWithContext(TraceInfo, this);
 	}
 }
 
@@ -65,7 +64,7 @@ void UAsync_MeleeTrace::StopTrace()
 {
 	if (MeleeTraceComponent.IsValid())
 	{
-		MeleeTraceComponent->EndTrace(TraceHash);
+		MeleeTraceComponent->EndTraceWithContext(this);
 	}
 
 	TracingActor.Reset();
