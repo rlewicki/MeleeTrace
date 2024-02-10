@@ -99,7 +99,7 @@ void UMeleeTraceComponent::StartTraceWithContext(const FMeleeTraceInfo& MeleeTra
 		return;
 	}
 
-	const uint32 ContextHash = MeleeTrace::CombineHashes(Context->GetUniqueID(), GetUniqueID());
+	const uint32 ContextHash = GetContextHash(Context);
 	const uint32 TraceHash = MeleeTrace::CalculateNewTraceHashWithContext(ContextHash);
 	InternalStartTrace(MeleeTraceInfo, TraceHash);
 }
@@ -111,7 +111,7 @@ void UMeleeTraceComponent::EndTraceWithContext(const UObject* Context)
 		return;
 	}
 
-	const uint32 ContextHash = MeleeTrace::CombineHashes(Context->GetUniqueID(), GetUniqueID());
+	const uint32 ContextHash = GetContextHash(Context);
 	const uint32 TraceHash = MeleeTrace::GetTraceHash(ContextHash);
 	InternalEndTrace(TraceHash);
 	MeleeTrace::ReleaseTraceHash(ContextHash);
@@ -153,6 +153,20 @@ void UMeleeTraceComponent::SetTraceChannel(ECollisionChannel NewTraceChannel)
 ECollisionChannel UMeleeTraceComponent::GetTraceChannel() const
 {
 	return TraceChannel;
+}
+
+TArray<AActor*> UMeleeTraceComponent::GetActorsHitByTraceWithContext(const UObject* Context) const
+{
+	const uint32 ContextHash = GetContextHash(Context);
+	const uint32 TraceHash = MeleeTrace::GetTraceHash(ContextHash);
+	TArray<AActor*> HitActors = InternalGetActorsHitByTrace(TraceHash); 
+	return MoveTemp(HitActors);
+}
+
+TArray<AActor*> UMeleeTraceComponent::GetActorsHitByTrace(const FMeleeTraceInstanceHandle& Handle) const
+{
+	TArray<AActor*> HitActors = InternalGetActorsHitByTrace(Handle.TraceHash); 
+	return MoveTemp(HitActors);
 }
 
 void UMeleeTraceComponent::InvalidateMeleeTraceHandle(FMeleeTraceInstanceHandle& Handle)
@@ -243,4 +257,33 @@ void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
 		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].HitActors.Num());
 		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
 	}
+}
+
+TArray<AActor*> UMeleeTraceComponent::InternalGetActorsHitByTrace(uint32 TraceHash) const
+{
+	const int32 TraceIndex = ActiveMeleeTraces.IndexOfByPredicate([TraceHash](const FActiveMeleeTraceInfo& TraceInfo)
+	{
+		return TraceInfo.TraceHash == TraceHash;
+	});
+
+	if (TraceIndex == INDEX_NONE)
+	{
+		return {};
+	}
+
+	TArray<AActor*> OutHitActors;
+	for (TWeakObjectPtr<AActor> HitActor : ActiveMeleeTraces[TraceIndex].HitActors)
+	{
+		if (HitActor.IsValid())
+		{
+			OutHitActors.Add(HitActor.Get());
+		}
+	}
+
+	return MoveTemp(OutHitActors);
+}
+
+uint32 UMeleeTraceComponent::GetContextHash(const UObject* Context) const
+{
+	return MeleeTrace::CombineHashes(Context->GetUniqueID(), GetUniqueID());
 }

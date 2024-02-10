@@ -79,6 +79,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	ECollisionChannel GetTraceChannel() const;
 
+	UFUNCTION(BlueprintPure, Category = "Melee Trace")
+	TArray<AActor*> GetActorsHitByTraceWithContext(const UObject* Context) const;
+
+	UFUNCTION(BlueprintPure, Category = "Melee Trace")
+	TArray<AActor*> GetActorsHitByTrace(const FMeleeTraceInstanceHandle& Handle) const;
+
 	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
 	static void InvalidateMeleeTraceHandle(UPARAM(Ref) FMeleeTraceInstanceHandle& Handle);
 
@@ -100,6 +106,8 @@ protected:
 
 	void InternalStartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
 	void InternalEndTrace(uint32 TraceHash);
+	TArray<AActor*> InternalGetActorsHitByTrace(uint32 TraceHash) const;
+	uint32 GetContextHash(const UObject* Context) const;
 	
 	TArray<FActiveMeleeTraceInfo> ActiveMeleeTraces;
 
