@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MeleeTraceInfo.h"
 
 #include "ActiveMeleeTraceInfo.generated.h"
 
+class AActor;
 class UMeshComponent;
 
 USTRUCT()
@@ -14,8 +14,11 @@ struct MELEETRACE_API FActiveMeleeTraceInfo
 {
 	GENERATED_BODY()
 
-	FMeleeTraceInfo MeleeTraceInfo;
-	uint32 TraceHash;
+	uint32 TraceHash = 0;
+	int32 TraceDensity = 1;
+	FName StartSocketName;
+	FName EndSocketName;
+	FCollisionShape TraceCollisionShape;
 	TWeakObjectPtr<UMeshComponent> SourceMeshComponent;
 	TSet<TWeakObjectPtr<AActor>> HitActors;
 	TArray<FVector> PreviousFrameSampleLocations;

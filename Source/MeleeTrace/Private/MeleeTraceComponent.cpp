@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 
 #include "MeleeTraceSettings.h"
+#include "MeleeTraceShape.h"
 
 #ifdef ENABLE_DRAW_DEBUG
 #include "MeleeTraceDebug.h"
@@ -43,7 +44,11 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 	for (FActiveMeleeTraceInfo& ActiveMeleeTrace : ActiveMeleeTraces)
 	{
 		TArray<FVector> NewSamples;
-		GetTraceSamples(ActiveMeleeTrace.SourceMeshComponent.Get(), ActiveMeleeTrace.MeleeTraceInfo, NewSamples);
+		GetTraceSamples(ActiveMeleeTrace.SourceMeshComponent.Get(),
+			ActiveMeleeTrace.TraceDensity,
+			ActiveMeleeTrace.StartSocketName,
+			ActiveMeleeTrace.EndSocketName,
+			NewSamples);
 		for (int32 Index = 0; Index < NewSamples.Num(); Index++)
 		{
 			HitResults.Reset();
@@ -52,7 +57,7 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 				NewSamples[Index],
 				FQuat::Identity,
 				TraceChannel,
-				FCollisionShape::MakeSphere(ActiveMeleeTrace.MeleeTraceInfo.Radius),
+				ActiveMeleeTrace.TraceCollisionShape,
 				CollisionQueryParams);
 #ifdef ENABLE_DRAW_DEBUG
 			if (bShouldDrawDebug)
@@ -180,15 +185,17 @@ bool UMeleeTraceComponent::IsMeleeTraceHandleValid(const FMeleeTraceInstanceHand
 }
 
 void UMeleeTraceComponent::GetTraceSamples(const UMeshComponent* MeshComponent,
-	const FMeleeTraceInfo& MeleeTraceInfo,
+	int32 TraceDensity,
+	const FName& StartSocketName,
+	const FName& EndSocketName,
 	TArray<FVector>& OutSamples)
 {
-	OutSamples.Reset(MeleeTraceInfo.TraceDensity + 1);
-	const FVector StartSampleLocation = MeshComponent->GetSocketLocation(MeleeTraceInfo.StartSocketName);
-	const FVector EndSampleLocation = MeshComponent->GetSocketLocation(MeleeTraceInfo.EndSocketName);
-	for (int32 Index = 0; Index <= MeleeTraceInfo.TraceDensity; Index++)
+	OutSamples.Reset(TraceDensity + 1);
+	const FVector StartSampleLocation = MeshComponent->GetSocketLocation(StartSocketName);
+	const FVector EndSampleLocation = MeshComponent->GetSocketLocation(EndSocketName);
+	for (int32 Index = 0; Index <= TraceDensity; Index++)
 	{
-		const float Alpha = static_cast<float>(Index) / static_cast<float>(MeleeTraceInfo.TraceDensity);
+		const float Alpha = static_cast<float>(Index) / static_cast<float>(TraceDensity);
 		const FVector Sample = FMath::Lerp(StartSampleLocation, EndSampleLocation, Alpha);
 		OutSamples.Add(Sample);
 	}
@@ -221,10 +228,17 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
 		{
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
-			NewMeleeTraceInfo.MeleeTraceInfo = MeleeTraceInfo;
 			NewMeleeTraceInfo.TraceHash = TraceHash;
+			NewMeleeTraceInfo.TraceDensity = MeleeTraceInfo.TraceDensity;
+			NewMeleeTraceInfo.StartSocketName = MeleeTraceInfo.StartSocketName;
+			NewMeleeTraceInfo.EndSocketName = MeleeTraceInfo.EndSocketName;
+			NewMeleeTraceInfo.TraceCollisionShape = MeleeTraceInfo.TraceShape->CreateCollisionShape();
 			NewMeleeTraceInfo.SourceMeshComponent = TypedMeshComponent;
-			GetTraceSamples(TypedMeshComponent, MeleeTraceInfo, NewMeleeTraceInfo.PreviousFrameSampleLocations);
+			GetTraceSamples(TypedMeshComponent,
+				MeleeTraceInfo.TraceDensity,
+				MeleeTraceInfo.StartSocketName,
+				MeleeTraceInfo.EndSocketName,
+				NewMeleeTraceInfo.PreviousFrameSampleLocations);
 			OnTraceStart.Broadcast(this);
 			return;
 		}

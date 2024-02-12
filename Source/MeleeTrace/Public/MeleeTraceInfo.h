@@ -5,19 +5,23 @@
 #include "CoreMinimal.h"
 #include "MeleeTraceInfo.generated.h"
 
+class UMeleeTraceShape;
+
 USTRUCT(BlueprintType)
 struct MELEETRACE_API FMeleeTraceInfo
 {
 	GENERATED_BODY()
+
+	FMeleeTraceInfo();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	FName StartSocketName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	FName EndSocketName;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
-	float Radius = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced, Category = "General")
+	TObjectPtr<UMeleeTraceShape> TraceShape;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	int32 TraceDensity = 5;

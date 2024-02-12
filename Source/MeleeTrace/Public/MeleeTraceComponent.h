@@ -101,7 +101,9 @@ public:
 	FMeleeTraceHit OnTraceHit;
 protected:
 	static void GetTraceSamples(const UMeshComponent* MeshComponent,
-		const FMeleeTraceInfo& MeleeTraceInfo,
+		int32 TraceDensity,
+		const FName& StartSocketName,
+		const FName& EndSocketName,
 		TArray<FVector>& OutSamples);
 
 	void InternalStartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
