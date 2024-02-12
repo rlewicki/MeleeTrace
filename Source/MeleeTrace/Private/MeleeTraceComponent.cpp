@@ -62,11 +62,11 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 #ifdef ENABLE_DRAW_DEBUG
 			if (bShouldDrawDebug)
 			{
-				MeleeTrace::DrawDebugSphereTraceMulti(GetWorld(),
-					ActiveMeleeTrace.PreviousFrameSampleLocations[Index],
-					NewSamples[Index],
-					ActiveMeleeTrace.TraceCollisionShape.GetSphereRadius(),
-					EDrawDebugTrace::ForDuration,
+				MeleeTrace::DrawDebugTrace(this,
+					ActiveMeleeTrace.TraceCollisionShape,
+					FTransform(ActiveMeleeTrace.PreviousFrameSampleLocations[Index]),
+					FTransform(NewSamples[Index]),
+					EDrawDebugTrace::Type::ForDuration,
 					bHit,
 					HitResults,
 					FLinearColor::Green,
