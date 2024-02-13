@@ -10,6 +10,11 @@ FCollisionShape UMeleeTraceShape::CreateCollisionShape() const
 	return FCollisionShape::LineShape;
 }
 
+FQuat UMeleeTraceShape::GetRotationOffset() const
+{
+	return FQuat::Identity;
+}
+
 FCollisionShape UMeleeTraceShape_Line::CreateCollisionShape() const
 {
 	return FCollisionShape::LineShape;
@@ -38,11 +43,19 @@ FCollisionShape UMeleeTraceShape_Capsule::CreateCollisionShape() const
 	return FCollisionShape::MakeCapsule(Radius, HalfHeight);
 }
 
-UMeleeTraceShape_Capsule* UMeleeTraceShape_Capsule::MakeCapsuleShape(float Radius, float HalfHeight)
+FQuat UMeleeTraceShape_Capsule::GetRotationOffset() const
+{
+	return RotationOffset.Quaternion();
+}
+
+UMeleeTraceShape_Capsule* UMeleeTraceShape_Capsule::MakeCapsuleShape(float Radius,
+	float HalfHeight,
+	const FRotator& RotationOffset)
 {
 	auto* NewShape = NewObject<UMeleeTraceShape_Capsule>();
 	NewShape->Radius = Radius;
 	NewShape->HalfHeight = HalfHeight;
+	NewShape->RotationOffset = RotationOffset;
 	return NewShape;
 }
 
@@ -51,9 +64,15 @@ FCollisionShape UMeleeTraceShape_Box::CreateCollisionShape() const
 	return FCollisionShape::MakeBox(Extent);
 }
 
-UMeleeTraceShape_Box* UMeleeTraceShape_Box::MakeBoxShape(const FVector& Extent)
+FQuat UMeleeTraceShape_Box::GetRotationOffset() const
+{
+	return RotationOffset.Quaternion();
+}
+
+UMeleeTraceShape_Box* UMeleeTraceShape_Box::MakeBoxShape(const FVector& Extent, const FRotator& RotationOffset)
 {
 	auto* NewShape = NewObject<UMeleeTraceShape_Box>();
 	NewShape->Extent = Extent;
+	NewShape->RotationOffset = RotationOffset;
 	return NewShape;
 }

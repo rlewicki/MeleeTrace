@@ -49,13 +49,16 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 			ActiveMeleeTrace.StartSocketName,
 			ActiveMeleeTrace.EndSocketName,
 			NewSamples);
+		const FQuat SamplesRotation = ActiveMeleeTrace.SourceMeshComponent->GetSocketRotation(
+			ActiveMeleeTrace.StartSocketName).Quaternion();
+		const FQuat OffsetRotation = ActiveMeleeTrace.RotationOffset * SamplesRotation;
 		for (int32 Index = 0; Index < NewSamples.Num(); Index++)
 		{
 			HitResults.Reset();
 			const bool bHit = GetWorld()->SweepMultiByChannel(HitResults,
 				ActiveMeleeTrace.PreviousFrameSampleLocations[Index],
 				NewSamples[Index],
-				FQuat::Identity,
+				OffsetRotation,
 				TraceChannel,
 				ActiveMeleeTrace.TraceCollisionShape,
 				CollisionQueryParams);
@@ -64,8 +67,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 			{
 				MeleeTrace::DrawDebugTrace(this,
 					ActiveMeleeTrace.TraceCollisionShape,
-					FTransform(ActiveMeleeTrace.PreviousFrameSampleLocations[Index]),
-					FTransform(NewSamples[Index]),
+					FTransform(OffsetRotation, ActiveMeleeTrace.PreviousFrameSampleLocations[Index]),
+					FTransform(OffsetRotation, NewSamples[Index]),
 					EDrawDebugTrace::Type::ForDuration,
 					bHit,
 					HitResults,
@@ -230,6 +233,7 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
 			NewMeleeTraceInfo.TraceHash = TraceHash;
 			NewMeleeTraceInfo.TraceDensity = MeleeTraceInfo.TraceDensity;
+			NewMeleeTraceInfo.RotationOffset = MeleeTraceInfo.TraceShape->GetRotationOffset();
 			NewMeleeTraceInfo.StartSocketName = MeleeTraceInfo.StartSocketName;
 			NewMeleeTraceInfo.EndSocketName = MeleeTraceInfo.EndSocketName;
 			NewMeleeTraceInfo.TraceCollisionShape = MeleeTraceInfo.TraceShape->CreateCollisionShape();

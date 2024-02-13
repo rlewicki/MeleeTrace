@@ -50,6 +50,7 @@ namespace MeleeTrace
 	void DrawDebugCapsuleTraceMulti(const UWorld* World,
 		const FVector& Start,
 		const FVector& End,
+		const FQuat& Orientation,
 		float Radius,
 		float HalfHeight,
 		EDrawDebugTrace::Type DrawDebugType,

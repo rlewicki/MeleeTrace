@@ -16,10 +16,11 @@ struct MELEETRACE_API FActiveMeleeTraceInfo
 
 	uint32 TraceHash = 0;
 	int32 TraceDensity = 1;
-	FName StartSocketName;
-	FName EndSocketName;
+	FQuat RotationOffset;
 	FCollisionShape TraceCollisionShape;
 	TWeakObjectPtr<UMeshComponent> SourceMeshComponent;
 	TSet<TWeakObjectPtr<AActor>> HitActors;
 	TArray<FVector> PreviousFrameSampleLocations;
+	FName StartSocketName;
+	FName EndSocketName;
 };
