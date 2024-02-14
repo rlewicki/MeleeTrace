@@ -293,42 +293,45 @@ void MeleeTrace::DrawDebugCapsuleTraceMulti(const UWorld* World,
 	}
 }
 
-void DrawDebugSweptBox(const UWorld* InWorld,
-	FVector const& Start,
-	FVector const& End,
-	FRotator const& Orientation,
-	FVector const& HalfSize,
-	FColor const& Color,
-	bool bPersistentLines,
-	float LifeTime,
-	uint8 DepthPriority = 0)
+namespace MeleeTrace
 {
-	FVector const TraceVec = End - Start;
-	FQuat const CapsuleRot = Orientation.Quaternion();
-	::DrawDebugBox(InWorld, Start, HalfSize, CapsuleRot, Color, bPersistentLines, LifeTime, DepthPriority);
-
-	//now draw lines from vertices
-	FVector Vertices[8];
-	Vertices[0] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, -HalfSize.Y, -HalfSize.Z)); //flt
-	Vertices[1] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, HalfSize.Y, -HalfSize.Z));  //frt
-	Vertices[2] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, -HalfSize.Y, HalfSize.Z));  //flb
-	Vertices[3] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, HalfSize.Y, HalfSize.Z));   //frb
-	Vertices[4] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, -HalfSize.Y, -HalfSize.Z));  //blt
-	Vertices[5] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, HalfSize.Y, -HalfSize.Z));   //brt
-	Vertices[6] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, -HalfSize.Y, HalfSize.Z));   //blb
-	Vertices[7] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, HalfSize.Y, HalfSize.Z));    //brb
-	for (int32 VertexIdx = 0; VertexIdx < 8; ++VertexIdx)
+	void DrawDebugSweptBox(const UWorld* InWorld,
+		FVector const& Start,
+		FVector const& End,
+		FRotator const& Orientation,
+		FVector const& HalfSize,
+		FColor const& Color,
+		bool bPersistentLines,
+		float LifeTime,
+		uint8 DepthPriority = 0)
 	{
-		::DrawDebugLine(InWorld,
-			Vertices[VertexIdx],
-			Vertices[VertexIdx] + TraceVec,
-			Color,
-			bPersistentLines,
-			LifeTime,
-			DepthPriority);
-	}
+		FVector const TraceVec = End - Start;
+		FQuat const CapsuleRot = Orientation.Quaternion();
+		::DrawDebugBox(InWorld, Start, HalfSize, CapsuleRot, Color, bPersistentLines, LifeTime, DepthPriority);
 
-	::DrawDebugBox(InWorld, End, HalfSize, CapsuleRot, Color, bPersistentLines, LifeTime, DepthPriority);
+		//now draw lines from vertices
+		FVector Vertices[8];
+		Vertices[0] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, -HalfSize.Y, -HalfSize.Z)); //flt
+		Vertices[1] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, HalfSize.Y, -HalfSize.Z));  //frt
+		Vertices[2] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, -HalfSize.Y, HalfSize.Z));  //flb
+		Vertices[3] = Start + CapsuleRot.RotateVector(FVector(-HalfSize.X, HalfSize.Y, HalfSize.Z));   //frb
+		Vertices[4] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, -HalfSize.Y, -HalfSize.Z));  //blt
+		Vertices[5] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, HalfSize.Y, -HalfSize.Z));   //brt
+		Vertices[6] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, -HalfSize.Y, HalfSize.Z));   //blb
+		Vertices[7] = Start + CapsuleRot.RotateVector(FVector(HalfSize.X, HalfSize.Y, HalfSize.Z));    //brb
+		for (int32 VertexIdx = 0; VertexIdx < 8; ++VertexIdx)
+		{
+			::DrawDebugLine(InWorld,
+				Vertices[VertexIdx],
+				Vertices[VertexIdx] + TraceVec,
+				Color,
+				bPersistentLines,
+				LifeTime,
+				DepthPriority);
+		}
+
+		::DrawDebugBox(InWorld, End, HalfSize, CapsuleRot, Color, bPersistentLines, LifeTime, DepthPriority);
+	}
 }
 
 void MeleeTrace::DrawDebugBoxTraceMulti(const UWorld* World,
@@ -352,7 +355,7 @@ void MeleeTrace::DrawDebugBoxTraceMulti(const UWorld* World,
 		{
 			// Red up to the blocking hit, green thereafter
 			FVector const BlockingHitPoint = HitResults.Last().Location;
-			::DrawDebugSweptBox(World,
+			DrawDebugSweptBox(World,
 				Start,
 				BlockingHitPoint,
 				Orientation,
@@ -360,7 +363,7 @@ void MeleeTrace::DrawDebugBoxTraceMulti(const UWorld* World,
 				TraceColor.ToFColor(true),
 				bPersistent,
 				LifeTime);
-			::DrawDebugSweptBox(World,
+			DrawDebugSweptBox(World,
 				BlockingHitPoint,
 				End,
 				Orientation,
@@ -372,7 +375,7 @@ void MeleeTrace::DrawDebugBoxTraceMulti(const UWorld* World,
 		else
 		{
 			// no hit means all red
-			::DrawDebugSweptBox(World,
+			DrawDebugSweptBox(World,
 				Start,
 				End,
 				Orientation,
