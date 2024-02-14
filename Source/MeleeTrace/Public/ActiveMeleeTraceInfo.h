@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CollisionShape.h"
 
 #include "ActiveMeleeTraceInfo.generated.h"
 
