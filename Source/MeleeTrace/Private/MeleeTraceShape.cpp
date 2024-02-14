@@ -2,12 +2,10 @@
 
 #include "MeleeTraceShape.h"
 
-FCollisionShape FCollisionShape::LineShape;
-
 FCollisionShape UMeleeTraceShape::CreateCollisionShape() const
 {
 	unimplemented();
-	return FCollisionShape::LineShape;
+	return FCollisionShape();
 }
 
 FQuat UMeleeTraceShape::GetRotationOffset() const
@@ -17,7 +15,7 @@ FQuat UMeleeTraceShape::GetRotationOffset() const
 
 FCollisionShape UMeleeTraceShape_Line::CreateCollisionShape() const
 {
-	return FCollisionShape::LineShape;
+	return FCollisionShape();
 }
 
 UMeleeTraceShape_Line* UMeleeTraceShape_Line::MakeLineShape()
