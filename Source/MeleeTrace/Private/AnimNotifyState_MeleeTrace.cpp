@@ -2,9 +2,10 @@
 
 #include "AnimNotifyState_MeleeTrace.h"
 
-#include "MeleeTraceCommon.h"
+#include "Animation/AnimSequenceBase.h"
 #include "Components/SkeletalMeshComponent.h"
 
+#include "MeleeTraceCommon.h"
 #include "MeleeTraceComponent.h"
 #include "MeleeTraceShape.h"
 
