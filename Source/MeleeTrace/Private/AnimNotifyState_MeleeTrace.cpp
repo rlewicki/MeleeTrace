@@ -33,7 +33,7 @@ void UAnimNotifyState_MeleeTrace::NotifyBegin(USkeletalMeshComponent* MeshComp,
 				UE_LOG(LogMeleeTrace,
 					Error,
 					TEXT("Invalid trace shape defined in a MeleeTrace anim notify for animation %s"),
-					*GetNameSafe(Animation));
+					*Animation->GetName());
 			}
 
 			MeleeTraceComponent->StartTraceWithContext(MeleeTraceInfo, this);
