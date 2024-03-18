@@ -256,7 +256,7 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 
 void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
 {
-	if (!ensureMsgf(TraceHash != 0,
+	if (!ensureMsgf(TraceHash != MeleeTrace::INVALID_HASH,
 		TEXT("No hash found for %s context object. Make sure that you start trace before calling end")))
 	{
 		return;
