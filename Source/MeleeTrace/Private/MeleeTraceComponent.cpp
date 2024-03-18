@@ -233,10 +233,21 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
 			NewMeleeTraceInfo.TraceHash = TraceHash;
 			NewMeleeTraceInfo.TraceDensity = MeleeTraceInfo.TraceDensity;
-			NewMeleeTraceInfo.RotationOffset = MeleeTraceInfo.TraceShape->GetRotationOffset();
 			NewMeleeTraceInfo.StartSocketName = MeleeTraceInfo.StartSocketName;
 			NewMeleeTraceInfo.EndSocketName = MeleeTraceInfo.EndSocketName;
-			NewMeleeTraceInfo.TraceCollisionShape = MeleeTraceInfo.TraceShape->CreateCollisionShape();
+			if (ensureMsgf(MeleeTraceInfo.TraceShape->IsValidLowLevelFast(),
+				TEXT("%s: Invalid trace shape definition"),
+				*GetNameSafe(GetOwner())))
+			{
+				NewMeleeTraceInfo.RotationOffset = MeleeTraceInfo.TraceShape->GetRotationOffset();
+				NewMeleeTraceInfo.TraceCollisionShape = MeleeTraceInfo.TraceShape->CreateCollisionShape();
+			}
+			else
+			{
+				// This is a fallback in case of incorrect user settings
+				NewMeleeTraceInfo.RotationOffset = FQuat::Identity;
+				NewMeleeTraceInfo.TraceCollisionShape = FCollisionShape();
+			}
 			NewMeleeTraceInfo.SourceMeshComponent = TypedMeshComponent;
 			GetTraceSamples(TypedMeshComponent,
 				MeleeTraceInfo.TraceDensity,

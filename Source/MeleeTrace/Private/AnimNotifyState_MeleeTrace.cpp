@@ -2,9 +2,11 @@
 
 #include "AnimNotifyState_MeleeTrace.h"
 
+#include "MeleeTraceCommon.h"
 #include "Components/SkeletalMeshComponent.h"
 
 #include "MeleeTraceComponent.h"
+#include "MeleeTraceShape.h"
 
 #if UE_VERSION_OLDER_THAN(5, 0, 0)
 void UAnimNotifyState_MeleeTrace::NotifyBegin(
@@ -26,6 +28,14 @@ void UAnimNotifyState_MeleeTrace::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	{
 		if (UMeleeTraceComponent* MeleeTraceComponent = OwnerActor->FindComponentByClass<UMeleeTraceComponent>())
 		{
+			if (!ensure(MeleeTraceInfo.TraceShape->IsValidLowLevelFast()))
+			{
+				UE_LOG(LogMeleeTrace,
+					Error,
+					TEXT("Invalid trace shape defined in a MeleeTrace anim notify for animation %s"),
+					*GetNameSafe(Animation));
+			}
+
 			MeleeTraceComponent->StartTraceWithContext(MeleeTraceInfo, this);
 		}
 	}
