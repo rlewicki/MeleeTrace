@@ -97,6 +97,8 @@ public:
 		const FName& EndSocketName,
 		TArray<FVector>& OutSamples);
 
+	const TArray<FActiveMeleeTraceInfo>& GetActiveMeleeTraces() const { return ActiveMeleeTraces; }
+
 	UPROPERTY(BlueprintAssignable)
 	FMeleeTraceStart OnTraceStart;
 
