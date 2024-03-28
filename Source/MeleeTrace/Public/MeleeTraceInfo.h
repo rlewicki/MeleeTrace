@@ -12,8 +12,6 @@ struct MELEETRACE_API FMeleeTraceInfo
 {
 	GENERATED_BODY()
 
-	FMeleeTraceInfo();
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	FName StartSocketName;
 
