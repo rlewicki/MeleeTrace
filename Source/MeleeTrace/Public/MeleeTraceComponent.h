@@ -91,6 +91,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")
 	static bool IsMeleeTraceHandleValid(const FMeleeTraceInstanceHandle& Handle);
 
+	static void GetTraceSamples(const UMeshComponent* MeshComponent,
+		int32 TraceDensity,
+		const FName& StartSocketName,
+		const FName& EndSocketName,
+		TArray<FVector>& OutSamples);
+
 	UPROPERTY(BlueprintAssignable)
 	FMeleeTraceStart OnTraceStart;
 
@@ -100,12 +106,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FMeleeTraceHit OnTraceHit;
 protected:
-	static void GetTraceSamples(const UMeshComponent* MeshComponent,
-		int32 TraceDensity,
-		const FName& StartSocketName,
-		const FName& EndSocketName,
-		TArray<FVector>& OutSamples);
-
 	void InternalStartTrace(const FMeleeTraceInfo& MeleeTraceInfo, uint32 TraceHash);
 	void InternalEndTrace(uint32 TraceHash);
 	TArray<AActor*> InternalGetActorsHitByTrace(uint32 TraceHash) const;
