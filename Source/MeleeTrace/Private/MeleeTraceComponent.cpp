@@ -72,8 +72,6 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 					EDrawDebugTrace::Type::ForDuration,
 					bHit,
 					HitResults,
-					FLinearColor::Green,
-					FLinearColor::Red,
 					DrawDebugDuration);
 			}
 #endif

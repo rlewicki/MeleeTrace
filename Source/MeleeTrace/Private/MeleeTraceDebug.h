@@ -17,8 +17,6 @@ namespace MeleeTrace
 		EDrawDebugTrace::Type DrawDebugType,
 		bool bHit,
 		const TArray<FHitResult>& HitResults,
-		const FLinearColor& TraceColor,
-		const FLinearColor& TraceHitColor,
 		float DrawTime);
 	void DrawDebugSphereTraceMulti(const UWorld* World,
 		const FVector& Start,

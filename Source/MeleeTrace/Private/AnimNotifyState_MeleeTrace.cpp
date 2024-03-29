@@ -132,8 +132,6 @@ void UAnimNotifyState_MeleeTrace::NotifyTick(USkeletalMeshComponent* MeshComp,
 					EDrawDebugTrace::ForDuration,
 					false,
 					{},
-					FLinearColor::Green,
-					FLinearColor::Red,
 					DebugDrawDuration);	
 			}
 		}

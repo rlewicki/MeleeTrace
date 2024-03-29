@@ -20,4 +20,10 @@ class MELEETRACE_API UMeleeTraceSettings : public UDeveloperSettings
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config, Category = "General")
 	TEnumAsByte<ECollisionChannel> MeleeTraceCollisionChannel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config, Category = "Debug")
+	FLinearColor TraceColor = FLinearColor::Red;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Config, Category = "Debug")
+	FLinearColor TraceHitColor = FLinearColor::Green;
 };

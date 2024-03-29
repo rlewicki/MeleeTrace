@@ -2,6 +2,8 @@
 
 #include "MeleeTraceDebug.h"
 
+#include "MeleeTraceSettings.h"
+
 #ifdef ENABLE_DRAW_DEBUG
 
 #include "DrawDebugHelpers.h"
@@ -16,8 +18,6 @@ void MeleeTrace::DrawDebugTrace(const UObject* WorldContextObject,
 	EDrawDebugTrace::Type DrawDebugType,
 	bool bHit,
 	const TArray<FHitResult>& HitResults,
-	const FLinearColor& TraceColor,
-	const FLinearColor& TraceHitColor,
 	float DrawTime)
 {
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
@@ -25,6 +25,11 @@ void MeleeTrace::DrawDebugTrace(const UObject* WorldContextObject,
 	{
 		return;
 	}
+
+	const UMeleeTraceSettings* Settings = GetDefault<UMeleeTraceSettings>();
+	check(Settings);
+	const FLinearColor TraceColor = Settings->TraceColor;
+	const FLinearColor TraceHitColor = Settings->TraceHitColor;
 
 	if (CollisionShape.IsLine())
 	{
