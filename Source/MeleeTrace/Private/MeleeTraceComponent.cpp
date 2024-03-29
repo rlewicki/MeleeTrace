@@ -89,8 +89,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 					ActiveMeleeTrace.HitActors.Add(HitResult.GetActor());
 					OnTraceHit.Broadcast(this,
 						HitResult.GetActor(),
-						HitResult.ImpactPoint,
-						HitResult.ImpactNormal,
+						HitResult.Location,
+						HitResult.Normal,
 						HitResult.BoneName);
 				}
 			}
