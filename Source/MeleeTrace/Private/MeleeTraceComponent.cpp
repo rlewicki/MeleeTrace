@@ -55,8 +55,13 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 		for (int32 Index = 0; Index < NewSamples.Num(); Index++)
 		{
 			HitResults.Reset();
+			FVector PreviousSampleLocation = ActiveMeleeTrace.PreviousFrameSampleLocations[Index];
+			if (PreviousSampleLocation.Equals(NewSamples[Index]))
+			{
+				PreviousSampleLocation += FVector::UpVector * UE_KINDA_SMALL_NUMBER;
+			}
 			const bool bHit = GetWorld()->SweepMultiByChannel(HitResults,
-				ActiveMeleeTrace.PreviousFrameSampleLocations[Index],
+				PreviousSampleLocation,
 				NewSamples[Index],
 				OffsetRotation,
 				TraceChannel,
@@ -87,8 +92,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 					ActiveMeleeTrace.HitActors.Add(HitResult.GetActor());
 					OnTraceHit.Broadcast(this,
 						HitResult.GetActor(),
-						HitResult.Location,
-						HitResult.Normal,
+						HitResult.ImpactPoint,
+						HitResult.ImpactNormal,
 						HitResult.BoneName);
 				}
 			}
