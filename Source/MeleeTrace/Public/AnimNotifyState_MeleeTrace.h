@@ -39,7 +39,7 @@ public:
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditInstanceOnly, Category = "Debug")
-	bool bShouldDrawDebugInEditor = true;
+	bool bShouldDrawDebugInEditor = false;
 
 	UPROPERTY(EditInstanceOnly, Category = "Debug")
 	float DebugDrawDuration = 1.0f;
