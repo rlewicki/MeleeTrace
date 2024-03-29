@@ -28,8 +28,23 @@ public:
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp,
 		UAnimSequenceBase* Animation,
 		const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyTick(USkeletalMeshComponent* MeshComp,
+		UAnimSequenceBase* Animation,
+		float FrameDeltaTime,
+		const FAnimNotifyEventReference& EventReference) override;
 #endif
 
 	UPROPERTY(EditInstanceOnly, Category = "Setup")
 	FMeleeTraceInfo MeleeTraceInfo;
+
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(EditInstanceOnly, Category = "Debug")
+	bool bShouldDrawDebugInEditor = true;
+
+	UPROPERTY(EditInstanceOnly, Category = "Debug")
+	float DebugDrawDuration = 1.0f;
+
+	TArray<FVector> PreviousFrameSamples;
+	TWeakObjectPtr<UMeshComponent> DebugMeshComponent = nullptr;
+#endif
 };
