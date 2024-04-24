@@ -2,9 +2,11 @@
 
 #include "MeleeTraceComponent.h"
 
-#include "MeleeTraceCommon.h"
+#include "Components/MeshComponent.h"
+#include "Engine/HitResult.h"
 #include "Engine/World.h"
 
+#include "MeleeTraceCommon.h"
 #include "MeleeTraceSettings.h"
 #include "MeleeTraceShape.h"
 
