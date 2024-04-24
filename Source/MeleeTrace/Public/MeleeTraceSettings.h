@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
+#include "Misc/EngineVersionComparison.h"
 
 #include "MeleeTraceSettings.generated.h"
 

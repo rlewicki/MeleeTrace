@@ -1,6 +1,7 @@
 ﻿// Copyright 2024, Robert Lewicki, All rights reserved.
 
 #include "MeleeTraceCommon.h"
+#include "Misc/EngineVersionComparison.h"
 
 DEFINE_LOG_CATEGORY(LogMeleeTrace);
 
