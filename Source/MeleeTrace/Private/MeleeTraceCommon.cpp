@@ -22,7 +22,7 @@ uint32 MeleeTrace::CalculateNewTraceHash()
 uint32 MeleeTrace::CalculateNewTraceHashWithContext(const uint32 ContextID)
 {
 	ensureMsgf(!ActiveHashes.Contains(ContextID),
-			TEXT("Hash for %s context object already exist in the map. Previous hash is going to be overwritten."));
+			TEXT("Hash for ContextID=%u already exist in the map. Previous hash is going to be overwritten."), ContextID);
 	const uint32 Hash = CalculateNewTraceHash();
 	ActiveHashes.Add(ContextID, Hash);
 	return Hash;
@@ -30,7 +30,7 @@ uint32 MeleeTrace::CalculateNewTraceHashWithContext(const uint32 ContextID)
 
 void MeleeTrace::ReleaseTraceHash(const uint32 ContextID)
 {
-	ensureMsgf(ActiveHashes.Contains(ContextID), TEXT("Attempt to release hash that is not tracked"));
+	ensureMsgf(ActiveHashes.Contains(ContextID), TEXT("Attempt to release hash by ContextID=%u that is not tracked"), ContextID);
 	ActiveHashes.Remove(ContextID);
 }
 
