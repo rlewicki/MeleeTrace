@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CollisionShape.h"
 #include "UObject/Object.h"
 #include "MeleeTraceShape.generated.h"
 
