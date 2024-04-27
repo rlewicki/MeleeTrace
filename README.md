@@ -1,6 +1,5 @@
 <h1 align="center">Melee Trace</h1>
 <p align="center" style="display:inline;"><a href="https://github.com/rlewicki/MeleeTrace/wiki">Wiki</a> • <a href="https://www.unrealengine.com/marketplace/en-US/product/melee-trace">Marketplace</a></p>
-<p align="center"><a href="https://www.buymeacoffee.com/robertlewicki" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></p>
 
 # The What
 This is a fairly generic plugin that enables you to setup melee traces directly in your animation assets.
