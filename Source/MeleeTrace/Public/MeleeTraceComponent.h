@@ -36,7 +36,7 @@ struct MELEETRACE_API FMeleeTraceInstanceHandle
 	GENERATED_BODY()
 
 	UPROPERTY()
-	uint32 TraceHash;
+	uint32 TraceHash = TNumericLimits<uint32>::Max();
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

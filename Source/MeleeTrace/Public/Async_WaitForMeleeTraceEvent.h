@@ -20,10 +20,10 @@ struct MELEETRACE_API FAsyncMeleeHitInfo
 	TObjectPtr<AActor> HitActor;
 
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
-	FVector HitLocation;
+	FVector HitLocation = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
-	FVector HitNormal;
+	FVector HitNormal = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "Melee Trace Info")
 	FName HitBoneName;
