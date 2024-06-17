@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/CancellableAsyncAction.h"
+#include "ActiveMeleeTraceInfo.h"
 #include "Async_WaitForMeleeTraceEvent.generated.h"
 
 class UMeleeTraceComponent;
