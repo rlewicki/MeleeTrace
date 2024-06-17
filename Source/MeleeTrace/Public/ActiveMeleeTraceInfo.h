@@ -10,12 +10,26 @@
 class AActor;
 class UMeshComponent;
 
+USTRUCT(BlueprintType)
+struct MELEETRACE_API FMeleeTraceInstanceHandle
+{
+	GENERATED_BODY()
+
+	FMeleeTraceInstanceHandle() = default;
+	FMeleeTraceInstanceHandle(uint32 InTraceHash) : TraceHash(InTraceHash) {};
+	
+	UPROPERTY()
+	uint32 TraceHash = TNumericLimits<uint32>::Max();
+
+	bool operator==(const FMeleeTraceInstanceHandle& Other) const { return TraceHash == Other.TraceHash; }
+};
+
 USTRUCT()
 struct MELEETRACE_API FActiveMeleeTraceInfo
 {
 	GENERATED_BODY()
 
-	uint32 TraceHash = 0;
+	FMeleeTraceInstanceHandle TraceHandle;
 	int32 TraceDensity = 1;
 	FQuat RotationOffset;
 	FCollisionShape TraceCollisionShape;

@@ -10,15 +10,19 @@
 
 #include "MeleeTraceComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMeleeTraceStart,
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMeleeTraceStart,
 	UMeleeTraceComponent*,
-	ThisComponent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMeleeTraceEnd,
+	ThisComponent,
+	FMeleeTraceInstanceHandle,
+	TraceHandle);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMeleeTraceEnd,
 	UMeleeTraceComponent*,
 	ThisComponent,
 	int32,
-	HitCount);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FMeleeTraceHit,
+	HitCount,
+	FMeleeTraceInstanceHandle,
+	TraceHandle);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FMeleeTraceHit,
 	UMeleeTraceComponent*,
 	ThisComponent,
 	AActor*,
@@ -28,16 +32,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FMeleeTraceHit,
 	const FVector&,
 	HitNormal,
 	FName,
-	HitBoneName);
-
-USTRUCT(BlueprintType)
-struct MELEETRACE_API FMeleeTraceInstanceHandle
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	uint32 TraceHash = TNumericLimits<uint32>::Max();
-};
+	HitBoneName,
+	FMeleeTraceInstanceHandle,
+	TraceHandle);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MELEETRACE_API UMeleeTraceComponent : public UActorComponent

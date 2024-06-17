@@ -42,7 +42,8 @@ public:
 
 	virtual void Cancel() override;
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAsyncWaitForMeleeHitDetected, FAsyncMeleeHitInfo, HitInfo);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(
+		FAsyncWaitForMeleeHitDetected, FAsyncMeleeHitInfo, HitInfo, FMeleeTraceInstanceHandle, TraceHandle);
 	UPROPERTY(BlueprintAssignable)
 	FAsyncWaitForMeleeHitDetected OnHit;
 
@@ -65,11 +66,12 @@ protected:
 		AActor* HitActor,
 		const FVector& HitLocation,
 		const FVector& HitNormal,
-		FName HitBoneName);
+		FName HitBoneName,
+		FMeleeTraceInstanceHandle TraceHandle);
 
 	UFUNCTION()
-	void HandleTraceStarted(UMeleeTraceComponent* ThisComponent);
+	void HandleTraceStarted(UMeleeTraceComponent* ThisComponent, FMeleeTraceInstanceHandle TraceHandle);
 
 	UFUNCTION()
-	void HandleTraceEnded(UMeleeTraceComponent* ThisComponent, int32 HitCount);
+	void HandleTraceEnded(UMeleeTraceComponent* ThisComponent, int32 HitCount, FMeleeTraceInstanceHandle TraceHandle);
 };

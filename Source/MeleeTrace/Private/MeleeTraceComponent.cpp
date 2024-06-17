@@ -96,7 +96,8 @@ void UMeleeTraceComponent::TickComponent(float DeltaTime,
 						HitResult.GetActor(),
 						HitResult.ImpactPoint,
 						HitResult.ImpactNormal,
-						HitResult.BoneName);
+						HitResult.BoneName,
+						ActiveMeleeTrace.TraceHandle);
 				}
 			}
 		}
@@ -147,7 +148,7 @@ void UMeleeTraceComponent::ForceEndAllTraces()
 {
 	for (const FActiveMeleeTraceInfo& ActiveMeleeTrace : ActiveMeleeTraces)
 	{
-		OnTraceEnd.Broadcast(this, ActiveMeleeTrace.HitActors.Num());
+		OnTraceEnd.Broadcast(this, ActiveMeleeTrace.HitActors.Num(), ActiveMeleeTrace.TraceHandle);
 	}
 
 	ActiveMeleeTraces.Reset();
@@ -236,7 +237,7 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 			&& TypedMeshComponent->DoesSocketExist(MeleeTraceInfo.EndSocketName))
 		{
 			FActiveMeleeTraceInfo& NewMeleeTraceInfo = ActiveMeleeTraces.AddDefaulted_GetRef();
-			NewMeleeTraceInfo.TraceHash = TraceHash;
+			NewMeleeTraceInfo.TraceHandle = FMeleeTraceInstanceHandle(TraceHash);
 			NewMeleeTraceInfo.TraceDensity = MeleeTraceInfo.TraceDensity;
 			NewMeleeTraceInfo.StartSocketName = MeleeTraceInfo.StartSocketName;
 			NewMeleeTraceInfo.EndSocketName = MeleeTraceInfo.EndSocketName;
@@ -259,7 +260,7 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 				MeleeTraceInfo.StartSocketName,
 				MeleeTraceInfo.EndSocketName,
 				NewMeleeTraceInfo.PreviousFrameSampleLocations);
-			OnTraceStart.Broadcast(this);
+			OnTraceStart.Broadcast(this, NewMeleeTraceInfo.TraceHandle);
 			return;
 		}
 	}
@@ -280,14 +281,17 @@ void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
 	const int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(
 		[TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
 		{
-			return TraceHash == ActiveMeleeTraceInfo.TraceHash;
+			return TraceHash == ActiveMeleeTraceInfo.TraceHandle.TraceHash;
 		});
 
 	if (ensureAlwaysMsgf(FoundIndex != INDEX_NONE,
 		TEXT("Attemping to end trace with hash: %u but no trace with hash exist"),
 		TraceHash))
 	{
-		OnTraceEnd.Broadcast(this, ActiveMeleeTraces[FoundIndex].HitActors.Num());
+		OnTraceEnd.Broadcast(
+			this,
+			ActiveMeleeTraces[FoundIndex].HitActors.Num(),
+			ActiveMeleeTraces[FoundIndex].TraceHandle);
 		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
 	}
 }
@@ -296,7 +300,7 @@ TArray<AActor*> UMeleeTraceComponent::InternalGetActorsHitByTrace(uint32 TraceHa
 {
 	const int32 TraceIndex = ActiveMeleeTraces.IndexOfByPredicate([TraceHash](const FActiveMeleeTraceInfo& TraceInfo)
 	{
-		return TraceInfo.TraceHash == TraceHash;
+		return TraceInfo.TraceHandle.TraceHash == TraceHash;
 	});
 
 	if (TraceIndex == INDEX_NONE)

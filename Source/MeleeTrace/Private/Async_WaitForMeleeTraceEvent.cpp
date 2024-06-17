@@ -70,7 +70,8 @@ void UAsync_WaitForMeleeTraceEvent::HandleTraceHit(
 	AActor* HitActor,
 	const FVector& HitLocation,
 	const FVector& HitNormal,
-	FName HitBoneName)
+	FName HitBoneName,
+	FMeleeTraceInstanceHandle TraceHandle)
 {
 	FAsyncMeleeHitInfo HitInfo;
 	HitInfo.OwnerTraceComponent = ThisComponent;
@@ -78,15 +79,17 @@ void UAsync_WaitForMeleeTraceEvent::HandleTraceHit(
 	HitInfo.HitLocation = HitLocation;
 	HitInfo.HitNormal = HitNormal;
 	HitInfo.HitBoneName = HitBoneName;
-	OnHit.Broadcast(HitInfo);
+	OnHit.Broadcast(HitInfo, TraceHandle);
 }
 
-void UAsync_WaitForMeleeTraceEvent::HandleTraceStarted(UMeleeTraceComponent* ThisComponent)
+void UAsync_WaitForMeleeTraceEvent::HandleTraceStarted(
+	UMeleeTraceComponent* ThisComponent, FMeleeTraceInstanceHandle TraceHandle)
 {
 	OnStarted.Broadcast();
 }
 
-void UAsync_WaitForMeleeTraceEvent::HandleTraceEnded(UMeleeTraceComponent* ThisComponent, int32 HitCount)
+void UAsync_WaitForMeleeTraceEvent::HandleTraceEnded(
+	UMeleeTraceComponent* ThisComponent, int32 HitCount, FMeleeTraceInstanceHandle TraceHandle)
 {
 	OnEnded.Broadcast();
 }
