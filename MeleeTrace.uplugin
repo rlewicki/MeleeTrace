@@ -6,7 +6,7 @@
 	"Description": "Generic plugin that enables you to setup melee traces directly in your animation assets.",
 	"Category": "Gameplay",
 	"CreatedBy": "Robert Lewicki",
-	"CreatedByURL": "https://rlewicki.tech/",
+	"CreatedByURL": "https://robertlewicki.games/",
 	"DocsURL": "https://github.com/rlewicki/MeleeTrace/wiki",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/42b0bb860bcd4995b70d40f152a6e9b9",
 	"SupportURL": "https://github.com/rlewicki/MeleeTrace",
