@@ -9,7 +9,7 @@
 #include "MeleeTraceComponent.h"
 
 UAsync_WaitForMeleeTraceEvent* UAsync_WaitForMeleeTraceEvent::WaitForMeleeTraceEventHit(
-	UObject* WorldContextObject, AActor* ActorToWatch)
+	UObject* WorldContextObject, AActor* ActorToWatch, bool OncePerMultiTrace)
 {
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World)
@@ -37,6 +37,7 @@ UAsync_WaitForMeleeTraceEvent* UAsync_WaitForMeleeTraceEvent::WaitForMeleeTraceE
 	}
 
 	auto* NewAction = NewObject<UAsync_WaitForMeleeTraceEvent>();
+	NewAction->OncePerMultiTrace = OncePerMultiTrace;
 	NewAction->ActorToWatch = ActorToWatch;
 	NewAction->MeleeTraceComponent = MeleeTraceComponent;
 	NewAction->RegisterWithGameInstance(World);
@@ -73,6 +74,11 @@ void UAsync_WaitForMeleeTraceEvent::HandleTraceHit(
 	FName HitBoneName,
 	FMeleeTraceInstanceHandle TraceHandle)
 {
+	if (!CanHit)
+	{
+		return;
+	}
+	
 	FAsyncMeleeHitInfo HitInfo;
 	HitInfo.OwnerTraceComponent = ThisComponent;
 	HitInfo.HitActor = HitActor;
@@ -80,16 +86,23 @@ void UAsync_WaitForMeleeTraceEvent::HandleTraceHit(
 	HitInfo.HitNormal = HitNormal;
 	HitInfo.HitBoneName = HitBoneName;
 	OnHit.Broadcast(HitInfo, TraceHandle);
+	
+	if (CanHit && OncePerMultiTrace)
+	{
+		CanHit = false;
+	}
 }
 
 void UAsync_WaitForMeleeTraceEvent::HandleTraceStarted(
 	UMeleeTraceComponent* ThisComponent, FMeleeTraceInstanceHandle TraceHandle)
 {
+	CanHit = true;
 	OnStarted.Broadcast();
 }
 
 void UAsync_WaitForMeleeTraceEvent::HandleTraceEnded(
 	UMeleeTraceComponent* ThisComponent, int32 HitCount, FMeleeTraceInstanceHandle TraceHandle)
 {
+	
 	OnEnded.Broadcast();
 }
