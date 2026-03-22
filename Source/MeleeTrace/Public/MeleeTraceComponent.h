@@ -83,6 +83,9 @@ public:
 	TArray<AActor*> GetActorsHitByTrace(const FMeleeTraceInstanceHandle& Handle) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
+	void ResetHitActorsForTrace(const FMeleeTraceInstanceHandle& TraceHandle);
+
+	UFUNCTION(BlueprintCallable, Category = "Melee Trace")
 	static void InvalidateMeleeTraceHandle(UPARAM(Ref) FMeleeTraceInstanceHandle& Handle);
 
 	UFUNCTION(BlueprintPure, Category = "Melee Trace")

@@ -183,6 +183,28 @@ TArray<AActor*> UMeleeTraceComponent::GetActorsHitByTrace(const FMeleeTraceInsta
 	return MoveTemp(HitActors);
 }
 
+void UMeleeTraceComponent::ResetHitActorsForTrace(const FMeleeTraceInstanceHandle& TraceHandle)
+{
+	if (!IsMeleeTraceHandleValid(TraceHandle))
+	{
+		UE_LOG(LogMeleeTrace, Error, TEXT("%hs: invalid handle used"), __FUNCTION__);
+		return;
+	}
+
+	FActiveMeleeTraceInfo* ActiveTrace = ActiveMeleeTraces.FindByPredicate([TraceHandle](const FActiveMeleeTraceInfo& TraceInfo)
+	{
+		return TraceInfo.TraceHandle == TraceHandle;
+	});
+
+	if (!ActiveTrace)
+	{
+		UE_LOG(LogMeleeTrace, Error, TEXT("%hs: no active trace found for TraceHandle=%u"), __FUNCTION__, TraceHandle.TraceHash);
+		return;
+	}
+
+	ActiveTrace->HitActors.Reset();
+}
+
 void UMeleeTraceComponent::InvalidateMeleeTraceHandle(FMeleeTraceInstanceHandle& Handle)
 {
 	Handle.TraceHash = MeleeTrace::INVALID_HASH;
