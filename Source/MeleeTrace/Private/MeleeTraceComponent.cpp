@@ -251,6 +251,7 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 		MeshComponents.Append(ActorMeshComponents);
 	}
 
+	bool AddedAny = false;
 	for (UActorComponent* MeshComponent : MeshComponents)
 	{
 		UMeshComponent* TypedMeshComponent = Cast<UMeshComponent>(MeshComponent);
@@ -283,14 +284,18 @@ void UMeleeTraceComponent::InternalStartTrace(const FMeleeTraceInfo& MeleeTraceI
 				MeleeTraceInfo.EndSocketName,
 				NewMeleeTraceInfo.PreviousFrameSampleLocations);
 			OnTraceStart.Broadcast(this, NewMeleeTraceInfo.TraceHandle);
-			return;
+			AddedAny = true;
 		}
 	}
 
-	ensureAlwaysMsgf(false,
-		TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
-		*MeleeTraceInfo.StartSocketName.ToString(),
-		*MeleeTraceInfo.EndSocketName.ToString());
+	if (!AddedAny)
+	{
+		UE_LOG(LogMeleeTrace,
+			Error,
+			TEXT("None of the USkeletalMeshComponents contain sockets with names: %s and %s"),
+			*MeleeTraceInfo.StartSocketName.ToString(),
+			*MeleeTraceInfo.EndSocketName.ToString());
+	}
 }
 
 void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
@@ -300,21 +305,25 @@ void UMeleeTraceComponent::InternalEndTrace(uint32 TraceHash)
 		return;
 	}
 
-	const int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(
-		[TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
-		{
-			return TraceHash == ActiveMeleeTraceInfo.TraceHandle.TraceHash;
-		});
+	auto Predicate = [TraceHash](const FActiveMeleeTraceInfo& ActiveMeleeTraceInfo)
+	{
+		return TraceHash == ActiveMeleeTraceInfo.TraceHandle.TraceHash;
+	};
+	int32 FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(Predicate);
 
 	if (ensureAlwaysMsgf(FoundIndex != INDEX_NONE,
 		TEXT("Attemping to end trace with hash: %u but no trace with hash exist"),
 		TraceHash))
 	{
-		OnTraceEnd.Broadcast(
-			this,
-			ActiveMeleeTraces[FoundIndex].HitActors.Num(),
-			ActiveMeleeTraces[FoundIndex].TraceHandle);
-		ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
+		while (FoundIndex != INDEX_NONE)
+		{
+			OnTraceEnd.Broadcast(
+				this,
+				ActiveMeleeTraces[FoundIndex].HitActors.Num(),
+				ActiveMeleeTraces[FoundIndex].TraceHandle);
+			ActiveMeleeTraces.RemoveAtSwap(FoundIndex);
+			FoundIndex = ActiveMeleeTraces.IndexOfByPredicate(Predicate);
+		}
 	}
 }
 

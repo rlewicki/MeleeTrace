@@ -39,7 +39,8 @@ public:
 		BlueprintCallable,
 		Category = "Melee Trace",
 		meta = (WorldContext = "WorldContextObject", BlueprintInternalUseOnly = "True"))
-	static UAsync_WaitForMeleeTraceEvent* WaitForMeleeTraceEventHit(UObject* WorldContextObject, AActor* ActorToWatch);
+	static UAsync_WaitForMeleeTraceEvent* WaitForMeleeTraceEventHit(UObject* WorldContextObject, AActor* ActorToWatch,
+		bool OncePerMultiTrace);
 
 	virtual void Cancel() override;
 	
@@ -58,6 +59,8 @@ public:
 protected:
 	virtual void Activate() override;
 
+	bool CanHit;
+	bool OncePerMultiTrace;
 	TWeakObjectPtr<AActor> ActorToWatch;
 	TWeakObjectPtr<UMeleeTraceComponent> MeleeTraceComponent;
 
